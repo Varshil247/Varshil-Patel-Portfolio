@@ -1,0 +1,20 @@
+/* @import url('https://fonts.googleapis.com/css2?family=Poetsen+One&display=swap'); */
+/* @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300;400;700&display=swap'); */
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  
+}
+
+html {
+  overscroll-behavior-y: none;
+}
+
+main {
+  scrollbar-width: none;
+  scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+}
