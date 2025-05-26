@@ -210,12 +210,6 @@ const Experience = () => {
 
   return (
     <div className="w-full h-full flex flex-col justify-center items-center p-4 md:p-8 text-left">
-      <h2
-        className={`text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r ${sectionTitleFrom} ${sectionTitleVia} ${sectionTitleTo} animate-gradient-x mb-8 md:mb-10 text-center`}
-      >
-        Professional Path
-      </h2>
-
       <div className="w-full max-w-7xl relative">
         {canScrollLeft && (
           <button

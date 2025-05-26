@@ -1,67 +1,75 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Home from "./components/Sections/Home";
 import Projects from "./components/Sections/Projects";
-// import Education from "./components/Sections/Education";
-import Experience from "./components/Sections/Expereince";
+import Education from "./components/Sections/Education";
+import Experience from "./components/Sections/Experience";
 
 const navLinks = [
-  { id: "Home", label: "Home", content: <Home /> },
-  { id: "Experience", label: "Experience", content: <Experience /> },
-  { id: "Projects", label: "Projects", content: <Projects /> },
-  // { id: "Educaton", label: "Education", content: <Education /> },
+  { id: "About", label: "🏘️ About Me", content: <Home /> },
+  { id: "Experience", label: "💼 Experience", content: <Experience /> },
+  { id: "Projects", label: "⚒️ Projects", content: <Projects /> },
+  { id: "Education", label: "🎓 Education", content: <Education /> },
 ];
 
 // ! --------------------------------------------------------------------------------------------
 
 const App = () => {
   const [activeSection, setActiveSection] = useState(navLinks[0].id);
-  const [indicatorStyle, setIndicatorStyle] = useState({ top: 0, height: 0, opacity: 0 });
+  const [sectionTransforms, setSectionTransforms] = useState(
+    navLinks.map(() => ({ rotateX: 0, rotateY: 0, scale: 1 }))
+  );
 
-  const navListRef = useRef(null);
   const mainRef = useRef(null);
-  const navItemRefs = useRef(navLinks.map(() => React.createRef()));
   const sectionRefs = useRef(navLinks.map(() => React.createRef()));
-
-  // ! --------------------------------------------------------------------------------------------
-
-  const updateIndicator = useCallback(() => {
-    const activeIndex = navLinks.findIndex((link) => link.id === activeSection);
-    if (activeIndex !== -1 && navItemRefs.current[activeIndex]?.current && navListRef.current) {
-      const activeNavItem = navItemRefs.current[activeIndex].current;
-      const topOffset = activeNavItem.offsetTop;
-
-      setIndicatorStyle({
-        top: topOffset,
-        height: activeNavItem.offsetHeight,
-        opacity: 1,
-      });
-    } else {
-      setIndicatorStyle((prev) => ({ ...prev, opacity: 0 }));
-    }
-  }, [activeSection]);
-
-  useEffect(() => {
-    updateIndicator();
-  }, [activeSection, updateIndicator]);
 
   // ! --------------------------------------------------------------------------------------------
 
   useEffect(() => {
     if (!mainRef.current) return;
 
+    const mainElement = mainRef.current;
+    mainElement.style.perspective = "1000px";
+
     const observerOptions = {
-      root: mainRef.current,
-      rootMargin: "0px 0px -45% 0px",
-      threshold: 0.1,
+      root: mainElement,
+      rootMargin: "0px",
+      threshold: 0.5,
     };
 
     const intersectionCallback = (entries) => {
-      const intersectingEntries = entries
-        .filter((entry) => entry.isIntersecting)
-        .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+      let mostCenteredEntry = null;
+      let maxIntersectionRatio = 0;
 
-      if (intersectingEntries.length > 0) {
-        setActiveSection(intersectingEntries[0].target.id);
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && entry.intersectionRatio > maxIntersectionRatio) {
+          maxIntersectionRatio = entry.intersectionRatio;
+          mostCenteredEntry = entry;
+        }
+      });
+
+      if (mostCenteredEntry) {
+        const activeId = mostCenteredEntry.target.id;
+        setActiveSection(activeId);
+
+        setSectionTransforms((prevTransforms) => {
+          return navLinks.map((link) => {
+            if (link.id === activeId) {
+              return { rotateX: 0, rotateY: 0, scale: 1 };
+            } else {
+              const activeIndex = navLinks.findIndex((navLink) => navLink.id === activeId);
+              const currentIndex = navLinks.findIndex((navLink) => navLink.id === link.id);
+              const isAbove = currentIndex < activeIndex;
+              const maxRotateX = 5;
+              const minScale = 0.85;
+
+              return {
+                rotateX: isAbove ? -maxRotateX : maxRotateX,
+                rotateY: 0,
+                scale: minScale,
+              };
+            }
+          });
+        });
       }
     };
 
@@ -76,49 +84,29 @@ const App = () => {
       currentSectionRefs.forEach((ref) => {
         if (ref.current) observer.unobserve(ref.current);
       });
+      if (mainElement) {
+        mainElement.style.perspective = "";
+      }
     };
   }, []);
 
   // ! --------------------------------------------------------------------------------------------
 
-  const handleNavLinkClick = (sectionId, event) => {
-    event.preventDefault();
-    const targetSection = sectionRefs.current.find((ref) => ref.current?.id === sectionId)?.current;
-
-    if (targetSection && mainRef.current) {
-      mainRef.current.scrollTo({
-        top: targetSection.offsetTop,
-        behavior: "smooth",
-      });
-    }
-  };
-
-  // ! --------------------------------------------------------------------------------------------
-
   return (
-    <div className="flex w-full h-screen bg-gradient-to-br from-emerald-900 to-green-900">
-      <aside className="sticky h-screen w-auto p-5 z-20 flex-shrink-0">
-        <nav className="h-full w-full flex">
-          <ul ref={navListRef} className="relative flex flex-col justify-center items-center gap-3">
-            <div
-              className="absolute left-0 w-full h-full rounded-md bg-gradient-to-r from-green-600 to-lime-600 shadow-lg transition-all duration-300 ease-in-out pointer-events-none -z-10"
-              style={{
-                top: `${indicatorStyle.top}px`,
-                height: `${indicatorStyle.height}px`,
-                opacity: indicatorStyle.opacity,
-                filter: "blur(2px)",
-              }}
-            />
-
-            {navLinks.map((link, index) => (
-              <li key={link.id} ref={navItemRefs.current[index]}>
+    <div className="flex flex-col md:flex-row w-full h-screen bg-gradient-to-br from-slate-900 via-emerald-900 to-green-900 font-sans overflow-hidden">
+      <aside className="sticky top-0 left-0 md:h-screen w-full md:w-auto p-4 md:p-9 z-20 bg-slate-900/70 md:bg-transparent backdrop-blur-sm md:backdrop-blur-none shadow-md md:shadow-none">
+        <nav className="h-full w-full flex md:flex-col items-center justify-center">
+          <ul className="flex flex-row md:flex-col justify-center gap-2 md:gap-4">
+            {navLinks.map((link) => (
+              <li key={link.id}>
                 <a
-                  className={`block font-extrabold text-2xl p-3 rounded-md transition-all duration-300 ease-in-out transform
+                  className={`block font-semibold md:font-extrabold text-xs sm:text-sm md:text-lg p-2 md:p-3 rounded-lg transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-lime-400
                     ${
-                      activeSection === link.id ? "text-white" : "text-gray-400 hover:text-lime-600"
+                      activeSection === link.id
+                        ? "text-white bg-gradient-to-r from-green-500 to-lime-500 shadow-lg"
+                        : "text-gray-300 hover:text-lime-300"
                     }`}
                   href={`#${link.id}`}
-                  onClick={(e) => handleNavLinkClick(link.id, e)}
                 >
                   {link.label}
                 </a>
@@ -127,21 +115,35 @@ const App = () => {
           </ul>
         </nav>
       </aside>
-
-      <main ref={mainRef} className="flex flex-col w-full min-h-[100vh] overflow-y-auto scroll-smooth">
-        {navLinks.map((link, index) => (
-          <section
-            key={link.id}
-            ref={sectionRefs.current[index]}
-            className="w-full min-h-screen p-5 snap-start"
-            id={link.id}
-          >
-            {link.content}
-          </section>
-        ))}
+      
+      <main
+        ref={mainRef}
+        className="flex-1 flex flex-col items-center w-full h-full overflow-y-auto scroll-smooth scroll-snap-type-y-mandatory py-20 pr-10 pl-0 gap-8"
+        style={{ transformStyle: "preserve-3d" }}
+      >
+        {navLinks.map((link, index) => {
+          const transform = sectionTransforms[index];
+          return (
+            <section
+              key={link.id}
+              ref={sectionRefs.current[index]}
+              className="w-full min-h-[100%] p-3 scroll-snap-align-start border border-lime-500/30 rounded-xl bg-black/30 shadow-2xl flex items-center justify-center"
+              id={link.id}
+              style={{
+                transform: `rotateX(${transform.rotateX}deg) rotateY(${transform.rotateY}deg) scale(${transform.scale})`,
+                transition: "transform 3s cubic-bezier(0.25, 0.8, 0.25, 1)",
+                transformOrigin: "center center",
+              }}
+            >
+              {link.content}
+            </section>
+          );
+        })}
       </main>
     </div>
   );
 };
 
 export default App;
+
+// ! --------------------------------------------------------------------------------------------

@@ -176,11 +176,6 @@ const Projects = () => {
 
   return (
     <div className="w-full h-full flex flex-col justify-center items-center p-4 md:p-8 gap-6 md:gap-8 text-left">
-      <h2
-        className={`text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r ${sectionTitleFrom} ${sectionTitleVia} ${sectionTitleTo} animate-gradient-x mb-10 md:mb-12 text-center`}
-      >
-        My Creative Works
-      </h2>
       {/* Grid container width increased and auto-rows height increased */}
       <div className="w-full max-w-7xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-[minmax(400px,_auto)]">
         {projectsData.map(
