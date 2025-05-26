@@ -1,96 +1,90 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, type ReactNode } from "react";
 import Home from "./components/Sections/Home";
 import Projects from "./components/Sections/Projects";
 import Education from "./components/Sections/Education";
 import Experience from "./components/Sections/Experience";
 
-const navLinks = [
-  { id: "About", label: "🏘️ About Me", content: <Home /> },
+// ! ----------------------------------------------------------------------------------------------
+
+// --- App Level Type Definitions ---
+interface NavLink {
+  id: string;
+  label: string;
+  content: ReactNode;
+}
+
+interface SectionTransform {
+  rotateX: number;
+  rotateY: number;
+  scale: number;
+}
+
+// --- NavLinks Data (Updated as per user's snippet) ---
+const navLinks: NavLink[] = [
+  { id: "Home", label: "🏘️ Home", content: <Home /> }, // Changed from "About"
   { id: "Experience", label: "💼 Experience", content: <Experience /> },
   { id: "Projects", label: "⚒️ Projects", content: <Projects /> },
-  { id: "Education", label: "🎓 Education", content: <Education /> },
+  // { id: "Education", label: "🎓 Education", content: <Education /> }, // Commented out
 ];
 
-// ! --------------------------------------------------------------------------------------------
-
-const App = () => {
-  const [activeSection, setActiveSection] = useState(navLinks[0].id);
-  const [sectionTransforms, setSectionTransforms] = useState(
+// --- App Component ---
+const App: React.FC = () => {
+  const [activeSection, setActiveSection] = useState<string>(navLinks[0].id);
+  const [sectionTransforms, setSectionTransforms] = useState<SectionTransform[]>(
     navLinks.map(() => ({ rotateX: 0, rotateY: 0, scale: 1 }))
   );
 
-  const mainRef = useRef(null);
-  const sectionRefs = useRef(navLinks.map(() => React.createRef()));
-
-  // ! --------------------------------------------------------------------------------------------
+  const mainRef = useRef<HTMLElement | null>(null);
+  const sectionRefs = useRef<(React.RefObject<HTMLElement> | null)[]>(
+    navLinks.map(() => React.createRef<HTMLElement>())
+  );
 
   useEffect(() => {
     if (!mainRef.current) return;
-
     const mainElement = mainRef.current;
     mainElement.style.perspective = "1000px";
 
-    const observerOptions = {
+    const observerOptions: IntersectionObserverInit = {
       root: mainElement,
       rootMargin: "0px",
       threshold: 0.5,
     };
 
-    const intersectionCallback = (entries) => {
-      let mostCenteredEntry = null;
+    const intersectionCallback: IntersectionObserverCallback = (entries) => {
+      let mostCenteredEntry: IntersectionObserverEntry | null = null;
       let maxIntersectionRatio = 0;
-
       entries.forEach((entry) => {
         if (entry.isIntersecting && entry.intersectionRatio > maxIntersectionRatio) {
           maxIntersectionRatio = entry.intersectionRatio;
           mostCenteredEntry = entry;
         }
       });
-
       if (mostCenteredEntry) {
         const activeId = mostCenteredEntry.target.id;
         setActiveSection(activeId);
-
-        setSectionTransforms((prevTransforms) => {
-          return navLinks.map((link) => {
-            if (link.id === activeId) {
-              return { rotateX: 0, rotateY: 0, scale: 1 };
-            } else {
-              const activeIndex = navLinks.findIndex((navLink) => navLink.id === activeId);
-              const currentIndex = navLinks.findIndex((navLink) => navLink.id === link.id);
-              const isAbove = currentIndex < activeIndex;
-              const maxRotateX = 5;
-              const minScale = 0.85;
-
-              return {
-                rotateX: isAbove ? -maxRotateX : maxRotateX,
-                rotateY: 0,
-                scale: minScale,
-              };
-            }
-          });
-        });
+        setSectionTransforms(() =>
+          navLinks.map((link) => {
+            if (link.id === activeId) return { rotateX: 0, rotateY: 0, scale: 1 };
+            const activeIndex = navLinks.findIndex((n) => n.id === activeId);
+            const currentIndex = navLinks.findIndex((n) => n.id === link.id);
+            const isAbove = currentIndex < activeIndex;
+            const maxRotateX = 3; // Updated as per user's snippet
+            return { rotateX: isAbove ? -maxRotateX : maxRotateX, rotateY: 0, scale: 0.85 };
+          })
+        );
       }
     };
 
     const observer = new IntersectionObserver(intersectionCallback, observerOptions);
     const currentSectionRefs = sectionRefs.current;
-
-    currentSectionRefs.forEach((ref) => {
-      if (ref.current) observer.observe(ref.current);
-    });
-
+    currentSectionRefs.forEach((ref) => ref?.current && observer.observe(ref.current));
     return () => {
-      currentSectionRefs.forEach((ref) => {
-        if (ref.current) observer.unobserve(ref.current);
-      });
+      currentSectionRefs.forEach((ref) => ref?.current && observer.unobserve(ref.current));
       if (mainElement) {
         mainElement.style.perspective = "";
       }
     };
   }, []);
-
-  // ! --------------------------------------------------------------------------------------------
 
   return (
     <div className="flex flex-col md:flex-row w-full h-screen bg-gradient-to-br from-slate-900 via-emerald-900 to-green-900 font-sans overflow-hidden">
@@ -107,6 +101,19 @@ const App = () => {
                         : "text-gray-300 hover:text-lime-300"
                     }`}
                   href={`#${link.id}`}
+                  onClick={(e) => {
+                    // Preserved smooth scroll logic
+                    e.preventDefault();
+                    const targetElement = document.getElementById(link.id);
+                    if (targetElement && mainRef.current) {
+                      const targetOffsetTopRelativeToMain =
+                        targetElement.offsetTop - mainRef.current.offsetTop;
+                      mainRef.current.scrollTo({
+                        top: targetOffsetTopRelativeToMain,
+                        behavior: "smooth",
+                      });
+                    }
+                  }}
                 >
                   {link.label}
                 </a>
@@ -115,10 +122,10 @@ const App = () => {
           </ul>
         </nav>
       </aside>
-      
+
       <main
         ref={mainRef}
-        className="flex-1 flex flex-col items-center w-full h-full overflow-y-auto scroll-smooth scroll-snap-type-y-mandatory py-20 pr-10 pl-0 gap-8"
+        className="flex-1 flex flex-col items-center w-full h-full overflow-y-auto scroll-smooth scroll-snap-type-y-mandatory px-4 sm:px-6 md:px-8 lg:px-10 py-12 sm:py-16 md:py-20 gap-8" // Updated padding
         style={{ transformStyle: "preserve-3d" }}
       >
         {navLinks.map((link, index) => {
@@ -127,7 +134,8 @@ const App = () => {
             <section
               key={link.id}
               ref={sectionRefs.current[index]}
-              className="w-full min-h-[100%] p-3 scroll-snap-align-start border border-lime-500/30 rounded-xl bg-black/30 shadow-2xl flex items-center justify-center"
+              // Updated section className as per user's snippet for this modification pass
+              className="w-full min-h-full p-3 scroll-snap-align-start border border-lime-500/30 rounded-xl bg-black/30 shadow-2xl flex items-center justify-center"
               id={link.id}
               style={{
                 transform: `rotateX(${transform.rotateX}deg) rotateY(${transform.rotateY}deg) scale(${transform.scale})`,
@@ -146,4 +154,4 @@ const App = () => {
 
 export default App;
 
-// ! --------------------------------------------------------------------------------------------
+// ! ----------------------------------------------------------------------------------------------

@@ -1,22 +1,30 @@
 // src/components/Sections/Experience.js
 import React, { useRef, useState, useEffect } from "react";
-import {
-  Briefcase,
-  Building,
-  CalendarDays,
-  Target,
-  CheckCircle,
-  ChevronLeft,
-  ChevronRight,
-  Star,
-} from "lucide-react"; // Added Star for highlights
+import { Briefcase, Building, CalendarDays, Target, CheckCircle, Star } from "lucide-react";
 
-// --- Placeholder Experience Data ---
-const experienceData = [
+// --- Experience Section (Bento Layout) ---
+
+interface ExperienceEntry {
+  id: number;
+  company: string;
+  role: string;
+  date: string;
+  location: string;
+  description: string;
+  responsibilities: string[];
+  defaultIcon: React.ReactElement<LucideProps>;
+}
+
+interface ExperienceCardProps {
+  entry: ExperienceEntry;
+  isActive?: boolean;
+}
+
+const experienceData: ExperienceEntry[] = [
   {
     id: 1,
-    company: "Nottingham Racing Formula Students Al",
-    role: "Project Manager & Path Planning Lead", // Shortened for better fit
+    company: "Formula Students Al",
+    role: "Project Manager & Path Planning Lead",
     date: "Sep 2024 - Present",
     location: "Nottingham, UK",
     description:
@@ -76,72 +84,68 @@ const experienceData = [
   },
 ];
 
-// --- Experience Card Sub-component ---
-const ExperienceCard = ({ entry }) => {
-  // Hardcoded Green Theme Styles for Card
-  const cardBg = "bg-emerald-800/70";
+// Full Experience Card (for the right bento)
+const ExperienceDetailCard: React.FC<ExperienceCardProps> = ({ entry }) => {
+  const cardBg = "bg-emerald-800/80";
   const cardText = "text-lime-300";
   const cardIconColor = "text-lime-400";
   const cardHighlightDotColor = "text-lime-500";
-  const cardSubtleBorder = "border-white/5";
-  const cardHoverBorder = "hover:border-lime-500/40";
-  const cardHoverShadow = "hover:shadow-lime-500/20";
+  const cardSubtleBorder = "border-lime-500/20";
 
-  if (!entry) return null;
+  if (!entry) {
+    return (
+      <div
+        className={`w-full h-full min-h-[400px] flex items-center justify-center ${cardBg} rounded-2xl p-6 border ${cardSubtleBorder} shadow-xl`}
+      >
+        <p className="text-gray-400 text-lg">Select an experience to view details.</p>
+      </div>
+    );
+  }
 
   return (
-    // Consistent card width: w-96 (384px). h-full makes it stretch to parent's item height.
     <div
-      className={`flex-shrink-0 w-96 h-full rounded-2xl shadow-xl overflow-hidden 
-                    transition-all duration-300 ease-in-out 
-                    transform hover:-translate-y-1 hover:scale-[1.01] 
-                    ${cardBg} 
-                    p-6 flex flex-col 
-                    border ${cardSubtleBorder} ${cardHoverBorder} ${cardHoverShadow} group`}
+      className={`w-full h-full min-h-[400px] rounded-2xl shadow-2xl overflow-hidden 
+               transition-all duration-300 ease-in-out 
+               ${cardBg} 
+               p-6 flex flex-col 
+               border ${cardSubtleBorder}`}
     >
-      {/* Header Section */}
       <div className="flex items-center mb-4">
         <div
-          className={`p-3 rounded-xl bg-gradient-to-br from-lime-500/20 to-emerald-600/30 mr-4 shrink-0 shadow-lg`}
+          className={`p-3 rounded-xl bg-gradient-to-br from-lime-500/30 to-emerald-600/40 mr-4 shrink-0 shadow-lg`}
         >
-          {React.cloneElement(entry.defaultIcon, { className: cardIconColor, size: 24 })}
+          {React.cloneElement(entry.defaultIcon, { className: cardIconColor, size: 28 })}
         </div>
         <div className="flex-grow">
-          <h3 className={`text-lg font-bold ${cardText} leading-tight`}>{entry.role}</h3>
-          <p className={`text-sm font-medium text-gray-300/80 flex items-center mt-0.5`}>
-            <Building size={14} className="mr-1.5 opacity-70 shrink-0" /> {entry.company}
+          <h3 className={`text-xl font-bold ${cardText} leading-tight`}>{entry.role}</h3>
+          <p className={`text-md font-medium text-gray-300/90 flex items-center mt-1`}>
+            <Building size={16} className="mr-2 opacity-80 shrink-0" /> {entry.company}
           </p>
         </div>
       </div>
 
-      {/* Date and Location */}
-      <div className="flex items-center justify-between text-xs text-gray-400/80 mb-4">
+      <div className="flex items-center justify-between text-sm text-gray-400/90 mb-5">
         <div className="flex items-center">
-          <CalendarDays size={14} className="mr-1.5 opacity-70" />
+          <CalendarDays size={15} className="mr-2 opacity-80" />
           <span>{entry.date}</span>
         </div>
         {entry.location && <span className="italic">{entry.location}</span>}
       </div>
 
-      {/* Main Content Area (Description + Responsibilities) - This div will grow */}
-      <div className="flex flex-col flex-grow justify-between">
-        {/* Description */}
-        <p className="text-gray-300 text-sm mb-5 leading-relaxed min-h-[70px] line-clamp-4 group-hover:line-clamp-none transition-all duration-200">
-          {entry.description}
-        </p>
+      <div className="flex flex-col flex-grow justify-between space-y-5">
+        <p className="text-gray-200 text-sm leading-relaxed">{entry.description}</p>
 
-        {/* Responsibilities / Key Points - Pushed to the bottom by justify-between on parent */}
         {entry.responsibilities && entry.responsibilities.length > 0 && (
           <div className="border-t border-white/10 pt-4">
-            <h4 className="text-xs font-semibold uppercase tracking-wider text-gray-400/70 mb-2.5 flex items-center">
-              <CheckCircle size={14} className="mr-2 opacity-70" /> Key Contributions
+            <h4 className="text-sm font-semibold uppercase tracking-wider text-gray-400/80 mb-3 flex items-center">
+              <CheckCircle size={15} className="mr-2 opacity-80" /> Key Contributions
             </h4>
-            <ul className="space-y-1.5">
+            <ul className="space-y-2">
               {entry.responsibilities.map((item, index) => (
-                <li key={index} className="flex items-start text-xs text-gray-300/90">
+                <li key={index} className="flex items-start text-sm text-gray-200/95">
                   <Star
-                    size={12}
-                    className={`mr-2 mt-[3px] shrink-0 ${cardHighlightDotColor} opacity-80`}
+                    size={14}
+                    className={`mr-2.5 mt-0.5 shrink-0 ${cardHighlightDotColor} opacity-90`}
                     fill="currentColor"
                   />
                   <span>{item}</span>
@@ -155,106 +159,140 @@ const ExperienceCard = ({ entry }) => {
   );
 };
 
-// --- Main Experience Component ---
-const Experience = () => {
-  const scrollContainerRef = useRef(null);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(true);
+// Main Experience Component (Bento Layout - TSX)
+const Experience: React.FC = () => {
+  const [selectedExperienceId, setSelectedExperienceId] = useState<number | null>(
+    experienceData.length > 0 ? experienceData[0].id : null
+  );
 
   const sectionTitleFrom = "from-green-400";
   const sectionTitleVia = "via-lime-400";
   const sectionTitleTo = "to-emerald-500";
-  const buttonBg = "bg-lime-500/90 hover:bg-lime-500 backdrop-blur-sm";
-  const buttonTextColor = "text-emerald-900";
 
-  const checkScrollability = () => {
-    if (scrollContainerRef.current) {
-      const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
-      const atLeft = scrollLeft <= 5;
-      const atRight = scrollLeft >= scrollWidth - clientWidth - 5;
-      setCanScrollLeft(!atLeft);
-      setCanScrollRight(!atRight);
-    }
-  };
+  const selectedExperience = experienceData.find((exp) => exp.id === selectedExperienceId);
 
-  useEffect(() => {
-    setTimeout(checkScrollability, 100);
-    const container = scrollContainerRef.current;
-    if (container) {
-      container.addEventListener("scroll", checkScrollability);
-      window.addEventListener("resize", checkScrollability);
-      const resizeObserver = new ResizeObserver(checkScrollability);
-      Array.from(container.children).forEach((child) => resizeObserver.observe(child));
-
-      return () => {
-        container.removeEventListener("scroll", checkScrollability);
-        window.removeEventListener("resize", checkScrollability);
-        resizeObserver.disconnect();
-      };
-    }
-  }, [experienceData]);
-
-  const scroll = (direction) => {
-    if (scrollContainerRef.current) {
-      const cardWidth = 384;
-      const gap = 24;
-      const scrollAmount = cardWidth + gap;
-
-      scrollContainerRef.current.scrollBy({
-        left: direction === "left" ? -scrollAmount : scrollAmount,
-        behavior: "smooth",
-      });
-      setTimeout(checkScrollability, 400);
-    }
+  // -- UPDATED: Style for the selected item's background glow --
+  const selectedBgStyle = {
+    background: "radial-gradient(circle at 3% 50%, rgba(163, 230, 53, 0.15) 0%, transparent 40%)",
   };
 
   return (
-    <div className="w-full h-full flex flex-col justify-center items-center p-4 md:p-8 text-left">
-      <div className="w-full max-w-7xl relative">
-        {canScrollLeft && (
-          <button
-            onClick={() => scroll("left")}
-            className={`absolute -left-3 md:-left-5 top-1/2 -translate-y-1/2 z-20 p-2.5 rounded-full shadow-xl transition-all duration-200 ${buttonBg} ${buttonTextColor} hover:scale-110`}
-            aria-label="Scroll Left"
-          >
-            <ChevronLeft size={22} strokeWidth={2.5} />
-          </button>
-        )}
-        {canScrollRight && (
-          <button
-            onClick={() => scroll("right")}
-            className={`absolute -right-3 md:-right-5 top-1/2 -translate-y-1/2 z-20 p-2.5 rounded-full shadow-xl transition-all duration-200 ${buttonBg} ${buttonTextColor} hover:scale-110`}
-            aria-label="Scroll Right"
-          >
-            <ChevronRight size={22} strokeWidth={2.5} />
-          </button>
-        )}
+    <div className="w-full h-full flex flex-col justify-center items-center p-4 md:p-6 lg:p-8 text-left">
+      <h2
+        className={`text-3xl md:text-4xl font-bold mb-8 md:mb-10 text-transparent bg-clip-text bg-gradient-to-r ${sectionTitleFrom} ${sectionTitleVia} ${sectionTitleTo} text-center`}
+      >
+        My Professional Experience
+      </h2>
 
-        <div
-          ref={scrollContainerRef}
-          className="flex overflow-x-auto space-x-4 md:space-x-6 py-4 snap-x snap-mandatory scrollbar-hide items-stretch" // items-stretch is key for same height
-        >
-          {experienceData.map((entry) => (
-            <ExperienceCard key={entry.id} entry={entry} />
-          ))}
+      <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+        {/* Left Bento: Minimal Timeline */}
+        <div className="md:col-span-1 bg-emerald-900/50 p-4 sm:p-6 rounded-2xl shadow-lg border border-lime-500/20 h-full max-h-[70vh] overflow-y-auto scrollbar-thin scrollbar-thumb-lime-600/50 scrollbar-track-emerald-900/30">
+          <h3 className="text-xl font-semibold text-lime-300 mb-5 pl-1">Timeline</h3>
+          <div className="relative">
+            {experienceData.map((entry, index) => (
+              <div
+                key={entry.id}
+                className={`relative flex items-start pb-6 last:pb-0 cursor-pointer p-2 -ml-2 rounded-lg transition-all duration-300 ease-in-out ${
+                  selectedExperienceId === entry.id
+                    ? "border-lime-500/40" // Use border to complement the glow
+                    : "border-transparent"
+                }`}
+                style={selectedExperienceId === entry.id ? selectedBgStyle : {}} // Apply glow style
+                onClick={() => setSelectedExperienceId(entry.id)}
+              >
+                {/* Timeline visual elements */}
+                <div className="absolute left-4 top-2 w-8 flex flex-col items-center -ml-[16px] h-full">
+                  <div
+                    className={`flex-shrink-0 w-8 h-8 rounded-full border-2 flex items-center justify-center z-10 shadow-md transition-all duration-300 
+                        ${
+                          selectedExperienceId === entry.id
+                            ? "bg-lime-500 border-lime-300 scale-110"
+                            : "bg-emerald-700 border-lime-500/70"
+                        }`}
+                  >
+                    {React.cloneElement(entry.defaultIcon, {
+                      className: `${
+                        selectedExperienceId === entry.id ? "text-emerald-900" : "text-lime-300"
+                      } transition-colors duration-300`,
+                      size: 16,
+                    })}
+                  </div>
+                  {index < experienceData.length - 1 && (
+                    <div
+                      className={`w-0.5 flex-grow mt-1 transition-colors duration-300 
+                          ${
+                            selectedExperienceId === entry.id ||
+                            (experienceData[index + 1] &&
+                              selectedExperienceId === experienceData[index + 1].id)
+                              ? "bg-lime-400/70"
+                              : "bg-lime-500/30"
+                          }`}
+                    ></div>
+                  )}
+                </div>
+
+                {/* Minimal Experience Info */}
+                <div
+                  className={`ml-10 pl-3 flex-grow transition-opacity duration-300 ${
+                    selectedExperienceId === entry.id ? "opacity-100" : "opacity-70"
+                  }`}
+                >
+                  <p
+                    className={`font-semibold text-sm transition-colors duration-300 ${
+                      selectedExperienceId === entry.id ? "text-lime-200" : "text-gray-200"
+                    }`}
+                  >
+                    {entry.company}
+                  </p>
+                  <p
+                    className={`text-xs transition-colors duration-300 ${
+                      selectedExperienceId === entry.id ? "text-gray-300" : "text-gray-400"
+                    }`}
+                  >
+                    {entry.role.substring(0, 30)}
+                    {entry.role.length > 30 ? "..." : ""}
+                  </p>
+                  <p
+                    className={`text-xs mt-0.5 transition-colors duration-300 ${
+                      selectedExperienceId === entry.id ? "text-lime-400/80" : "text-gray-500"
+                    }`}
+                  >
+                    {entry.date}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Right Bento: Detailed Experience Card */}
+        <div className="md:col-span-2 h-full min-h-[400px] md:min-h-0">
+          <ExperienceDetailCard entry={selectedExperience!} />
         </div>
       </div>
       <style jsx global>{`
-        .scrollbar-hide::-webkit-scrollbar {
-          display: none;
+        .scrollbar-thin {
+          scrollbar-width: thin;
+          scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
         }
-        .scrollbar-hide {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
+        .scrollbar-thin::-webkit-scrollbar {
+          width: 8px;
+          height: 8px;
         }
-        .line-clamp-4 {
-          display: -webkit-box;
-          -webkit-line-clamp: 4;
-          -webkit-box-orient: vertical;
-          overflow: hidden;
+        .scrollbar-thin::-webkit-scrollbar-track {
+          background: var(--scrollbar-track);
+          border-radius: 10px;
         }
-        .group:hover .line-clamp-4 {
-          -webkit-line-clamp: unset;
+        .scrollbar-thin::-webkit-scrollbar-thumb {
+          background-color: var(--scrollbar-thumb);
+          border-radius: 10px;
+          border: 2px solid var(--scrollbar-track);
+        }
+      `}</style>
+      <style jsx>{`
+        :root {
+          --scrollbar-thumb: #84cc16; /* lime-500 */
+          --scrollbar-track: #065f46; /* emerald-900 */
         }
       `}</style>
     </div>
