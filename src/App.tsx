@@ -1,10 +1,8 @@
 import React, { useState, useEffect, useRef, type ReactNode } from "react";
 import Home from "./components/Sections/Home";
 import Projects from "./components/Sections/Projects";
-// import Education from "./components/Sections/Education";
+import Education from "./components/Sections/Education";
 import Experience from "./components/Sections/Experience";
-
-// ! ----------------------------------------------------------------------------------------------
 
 // --- App Level Type Definitions ---
 interface NavLink {
@@ -19,12 +17,12 @@ interface SectionTransform {
   scale: number;
 }
 
-// --- NavLinks Data (Updated as per user's snippet) ---
+// --- NavLinks Data ---
 const navLinks: NavLink[] = [
-  { id: "Home", label: "🏘️ Home", content: <Home /> }, // Changed from "About"
+  { id: "Home", label: "🏘️ Home", content: <Home /> },
   { id: "Experience", label: "💼 Experience", content: <Experience /> },
   { id: "Projects", label: "⚒️ Projects", content: <Projects /> },
-  // { id: "Education", label: "🎓 Education", content: <Education /> }, // Commented out
+  { id: "Education", label: "🎓 Education", content: <Education /> },
 ];
 
 // --- App Component ---
@@ -35,9 +33,7 @@ const App: React.FC = () => {
   );
 
   const mainRef = useRef<HTMLElement | null>(null);
-  const sectionRefs = useRef<(React.RefObject<HTMLElement> | null)[]>(
-    navLinks.map(() => React.createRef<HTMLElement>())
-  );
+  const sectionRefs = useRef<(HTMLElement | null)[]>([]);
 
   useEffect(() => {
     if (!mainRef.current) return;
@@ -50,25 +46,28 @@ const App: React.FC = () => {
       threshold: 0.5,
     };
 
-    const intersectionCallback: IntersectionObserverCallback = (entries) => {
+    const intersectionCallback = (entries: IntersectionObserverEntry[]) => {
       let mostCenteredEntry: IntersectionObserverEntry | null = null;
       let maxIntersectionRatio = 0;
+
       entries.forEach((entry) => {
         if (entry.isIntersecting && entry.intersectionRatio > maxIntersectionRatio) {
           maxIntersectionRatio = entry.intersectionRatio;
           mostCenteredEntry = entry;
         }
       });
-      if (mostCenteredEntry) {
+
+      if (mostCenteredEntry && mostCenteredEntry.target instanceof HTMLElement) {
         const activeId = mostCenteredEntry.target.id;
         setActiveSection(activeId);
+
         setSectionTransforms(() =>
           navLinks.map((link) => {
             if (link.id === activeId) return { rotateX: 0, rotateY: 0, scale: 1 };
             const activeIndex = navLinks.findIndex((n) => n.id === activeId);
             const currentIndex = navLinks.findIndex((n) => n.id === link.id);
             const isAbove = currentIndex < activeIndex;
-            const maxRotateX = 3; // Updated as per user's snippet
+            const maxRotateX = 3;
             return { rotateX: isAbove ? -maxRotateX : maxRotateX, rotateY: 0, scale: 0.85 };
           })
         );
@@ -77,9 +76,15 @@ const App: React.FC = () => {
 
     const observer = new IntersectionObserver(intersectionCallback, observerOptions);
     const currentSectionRefs = sectionRefs.current;
-    currentSectionRefs.forEach((ref) => ref?.current && observer.observe(ref.current));
+
+    currentSectionRefs.forEach((ref) => {
+      if (ref) observer.observe(ref);
+    });
+
     return () => {
-      currentSectionRefs.forEach((ref) => ref?.current && observer.unobserve(ref.current));
+      currentSectionRefs.forEach((ref) => {
+        if (ref) observer.unobserve(ref);
+      });
       if (mainElement) {
         mainElement.style.perspective = "";
       }
@@ -101,8 +106,7 @@ const App: React.FC = () => {
                         : "text-gray-300 hover:text-lime-300"
                     }`}
                   href={`#${link.id}`}
-                  onClick={(e) => {
-                    // Preserved smooth scroll logic
+                  onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                     e.preventDefault();
                     const targetElement = document.getElementById(link.id);
                     if (targetElement && mainRef.current) {
@@ -125,7 +129,7 @@ const App: React.FC = () => {
 
       <main
         ref={mainRef}
-        className="flex-1 flex flex-col items-center w-full h-full overflow-y-auto scroll-smooth scroll-snap-type-y-mandatory px-4 sm:px-6 md:px-8 lg:px-10 py-12 sm:py-16 md:py-20 gap-8" // Updated padding
+        className="flex-1 flex flex-col items-center w-full h-full overflow-y-auto scroll-smooth scroll-snap-type-y-mandatory px-4 sm:px-6 md:px-8 lg:px-10 py-12 sm:py-16 md:py-20 gap-8"
         style={{ transformStyle: "preserve-3d" }}
       >
         {navLinks.map((link, index) => {
@@ -133,8 +137,9 @@ const App: React.FC = () => {
           return (
             <section
               key={link.id}
-              ref={sectionRefs.current[index]}
-              // Updated section className as per user's snippet for this modification pass
+              ref={(element) => {
+                sectionRefs.current[index] = element;
+              }}
               className="w-full min-h-full p-3 scroll-snap-align-start border border-lime-500/30 rounded-xl bg-black/30 shadow-2xl flex items-center justify-center"
               id={link.id}
               style={{
@@ -153,5 +158,3 @@ const App: React.FC = () => {
 };
 
 export default App;
-
-// ! ----------------------------------------------------------------------------------------------

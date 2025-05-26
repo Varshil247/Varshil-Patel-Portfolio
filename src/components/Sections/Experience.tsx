@@ -5,6 +5,12 @@ import { Briefcase, Building, CalendarDays, Target, CheckCircle, Star } from "lu
 
 // --- TypeScript Interfaces ---
 
+// CORRECTED: Define a props type for icons that can be styled
+interface StylableIconProps {
+  className?: string;
+  size?: number | string;
+}
+
 interface ExperienceEntry {
   id: number;
   company: string;
@@ -13,7 +19,8 @@ interface ExperienceEntry {
   location: string;
   description: string;
   responsibilities: string[];
-  defaultIcon: ReactElement;
+  // CORRECTED: Use the more specific type for the icon
+  defaultIcon: ReactElement<StylableIconProps>;
 }
 
 interface ExperienceDetailCardProps {
@@ -116,6 +123,7 @@ const ExperienceDetailCard: FC<ExperienceDetailCardProps> = ({ entry }) => {
         <div
           className={`p-3 rounded-xl bg-gradient-to-br from-lime-500/30 to-emerald-600/40 mr-4 shrink-0 shadow-lg`}
         >
+          {/* This cloneElement is now type-safe */}
           {React.cloneElement(entry.defaultIcon, { className: cardIconColor, size: 28 })}
         </div>
         <div className="flex-grow">
@@ -209,6 +217,7 @@ const Experience: FC = () => {
                             : "bg-emerald-700 border-lime-500/70"
                         }`}
                   >
+                    {/* This cloneElement is also now type-safe */}
                     {React.cloneElement(entry.defaultIcon, {
                       className: `${
                         selectedExperienceId === entry.id ? "text-emerald-900" : "text-lime-300"
@@ -269,7 +278,7 @@ const Experience: FC = () => {
           <ExperienceDetailCard entry={selectedExperience} />
         </div>
       </div>
-      <style jsx global>{`
+      <style>{`
         .scrollbar-thin {
           scrollbar-width: thin;
           scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
@@ -288,7 +297,7 @@ const Experience: FC = () => {
           border: 2px solid var(--scrollbar-track);
         }
       `}</style>
-      <style jsx>{`
+      <style>{`
         :root {
           --scrollbar-thumb: #84cc16; /* lime-500 */
           --scrollbar-track: #065f46; /* emerald-900 */

@@ -1,8 +1,5 @@
-// src/components/Education.tsx
-
-import React from "react";
 import type { FC, ReactElement } from "react";
-import { BookOpen, Award, CalendarDays, Briefcase } from "lucide-react";
+import { Award, CalendarDays, Briefcase } from "lucide-react";
 
 // --- TypeScript Interfaces ---
 

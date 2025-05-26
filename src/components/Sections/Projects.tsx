@@ -2,18 +2,27 @@
 import React from "react";
 import type { FC, ReactElement } from "react";
 import { ExternalLink, Github, Brain, CalendarCheck, Route, Network } from "lucide-react";
+import clsx from "clsx";
 
 // --- TypeScript Interfaces ---
+
+// CORRECTED: Define a more specific props type for our icons
+interface StylableIconProps {
+  className?: string;
+  size?: number | string;
+}
+
 interface Project {
   id: number;
   title: string;
   description: string;
-  imageUrl?: string; // Optional image URL
+  imageUrl?: string;
   tags: string[];
   liveUrl: string | null;
   repoUrl: string | null;
-  span: string; // e.g., "md:col-span-2"
-  defaultIcon: ReactElement;
+  span: string;
+  // CORRECTED: Use the more specific type for the icon
+  defaultIcon: ReactElement<StylableIconProps>;
 }
 
 interface ProjectCardProps {
@@ -27,11 +36,10 @@ const projectsData: Project[] = [
     title: "FinVis AI",
     description:
       "Engineered a full-stack financial analysis tool with a Python Flask backend, XGBoost ML model, and React frontend. Delivers real-time financial insights, using FinBERT NLP and Gemini LLM for explainable AI, and D3.js for interactive visualisations.",
-    // imageUrl: "https://placehold.co/800x600/059669/e2e8f0?text=FinVis+AI",
     tags: ["Python", "Flask", "XGBoost", "React", "NLP", "Gemini LLM", "D3.js", "Explainable AI"],
     liveUrl: "#",
     repoUrl: "#",
-    span: "md:col-span-1 lg:col-span-2", // Span 2 on lg screens
+    span: "md:col-span-1 lg:col-span-2",
     defaultIcon: <Brain size={24} />,
   },
   {
@@ -39,7 +47,6 @@ const projectsData: Project[] = [
     title: "Scheduler",
     description:
       "Developed a Python productivity app for 120+ academics, integrating timetabling, homework management, and transportation planning. Implemented a genetic algorithm with 98% scheduling accuracy.",
-    // imageUrl: "https://placehold.co/600x400/047857/e2e8f0?text=Scheduler+GA",
     tags: ["Python", "Genetic Algorithms", "Productivity", "CRUD"],
     liveUrl: "#",
     repoUrl: "#",
@@ -51,7 +58,6 @@ const projectsData: Project[] = [
     title: "UAV TSP",
     description:
       "Java-based backend optimiser for UAV route planning using the HyFlex hyper-heuristic framework for dynamic TSP. Implemented metaheuristic operators like PMX, Adjacent Swap, and Davis Hill Climbing.",
-    // imageUrl: "https://placehold.co/600x400/065f46/e2e8f0?text=UAV+TSP",
     tags: ["Java", "HyFlex", "Metaheuristics", "TSP", "Optimization", "UAV"],
     liveUrl: null,
     repoUrl: "#",
@@ -63,11 +69,10 @@ const projectsData: Project[] = [
     title: "TCP/IP Dijkstra's",
     description:
       "Lightweight TCP/IP client-server system in ANSI C implementing Dijkstra's Algorithm for shortest-path routing (avg. 0.05s for 100 nodes). Designed dynamic, memory-optimised architectures.",
-    // imageUrl: "https://placehold.co/800x600/027767/e2e8f0?text=TCP/IP+Dijkstra",
     tags: ["ANSI C", "TCP/IP", "Dijkstra's Algorithm", "Networking", "Systems Programming"],
     liveUrl: null,
     repoUrl: "#",
-    span: "md:col-span-2 lg:col-span-4", // Span 4 on lg screens
+    span: "md:col-span-2 lg:col-span-4",
     defaultIcon: <Network size={24} />,
   },
 ];
@@ -88,16 +93,33 @@ const projectCardStyle = {
 const ProjectCard: FC<ProjectCardProps> = ({ project }) => {
   const currentCardStyle = projectCardStyle;
 
+  const cardClassName = clsx(
+    "group",
+    "relative",
+    "rounded-xl",
+    "shadow-xl",
+    "overflow-hidden",
+    "transition-all",
+    "duration-300",
+    "ease-in-out",
+    "transform",
+    "hover:-translate-y-1",
+    "hover:scale-[1.015]",
+    "p-6",
+    "flex",
+    "flex-col",
+    "justify-between",
+    "h-full",
+    "border",
+    project.span,
+    currentCardStyle.bg,
+    currentCardStyle.subtleBorder,
+    currentCardStyle.hoverBorder,
+    currentCardStyle.hoverShadow
+  );
+
   return (
-    <div
-      className={`group relative rounded-xl shadow-xl overflow-hidden 
-               transition-all duration-300 ease-in-out 
-               transform hover:-translate-y-1 hover:scale-[1.015] 
-               ${project.span} 
-               ${currentCardStyle.bg} 
-               p-6 flex flex-col justify-between h-full 
-               border ${currentCardStyle.subtleBorder} ${currentCardStyle.hoverBorder} ${currentCardStyle.hoverShadow}`}
-    >
+    <div className={cardClassName}>
       {project.imageUrl && (
         <img
           src={project.imageUrl}
@@ -109,10 +131,10 @@ const ProjectCard: FC<ProjectCardProps> = ({ project }) => {
         />
       )}
       <div>
-        {/* Content wrapper for top part of the card */}
         <div className="flex items-center mb-3">
+          {/* This line should now be error-free */}
           {React.cloneElement(project.defaultIcon, { className: currentCardStyle.icon, size: 22 })}
-          <h3 className={`ml-3 text-xl lg:text-2xl font-bold ${currentCardStyle.text}`}>
+          <h3 className={clsx("ml-3 text-xl lg:text-2xl font-bold", currentCardStyle.text)}>
             {project.title}
           </h3>
         </div>
@@ -120,7 +142,6 @@ const ProjectCard: FC<ProjectCardProps> = ({ project }) => {
           {project.description}
         </p>
         <div className="mb-4">
-          {/* Tags container */}
           {project.tags.map((tag) => (
             <span
               key={tag}
@@ -131,15 +152,22 @@ const ProjectCard: FC<ProjectCardProps> = ({ project }) => {
           ))}
         </div>
       </div>
-      <div /* Links container */
-        className={`flex items-center space-x-3 mt-auto pt-4 border-t ${currentCardStyle.subtleBorder}`}
+      <div
+        className={clsx(
+          "flex items-center space-x-3 mt-auto pt-4 border-t",
+          currentCardStyle.subtleBorder
+        )}
       >
         {project.repoUrl && (
           <a
             href={project.repoUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className={`inline-flex items-center text-sm font-medium py-2 px-3 rounded-lg transition-colors duration-300 shadow-md hover:shadow-lg ${currentCardStyle.linkText} ${currentCardStyle.linkHoverBg}`}
+            className={clsx(
+              "inline-flex items-center text-sm font-medium py-2 px-3 rounded-lg transition-colors duration-300 shadow-md hover:shadow-lg",
+              currentCardStyle.linkText,
+              currentCardStyle.linkHoverBg
+            )}
             title="View Code Repository"
           >
             <Github size={16} className="mr-1.5" /> Code
@@ -150,7 +178,11 @@ const ProjectCard: FC<ProjectCardProps> = ({ project }) => {
             href={project.liveUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className={`inline-flex items-center text-sm font-medium py-2 px-3 rounded-lg transition-colors duration-300 shadow-md hover:shadow-lg ${currentCardStyle.linkText} ${currentCardStyle.linkHoverBg}`}
+            className={clsx(
+              "inline-flex items-center text-sm font-medium py-2 px-3 rounded-lg transition-colors duration-300 shadow-md hover:shadow-lg",
+              currentCardStyle.linkText,
+              currentCardStyle.linkHoverBg
+            )}
             title="View Live Demo"
           >
             <ExternalLink size={16} className="mr-1.5" /> Live
