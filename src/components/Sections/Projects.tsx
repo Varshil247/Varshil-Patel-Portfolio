@@ -39,7 +39,7 @@ const projectsData: Project[] = [
     tags: ["Python", "Flask", "XGBoost", "React", "NLP", "Gemini LLM", "D3.js", "Explainable AI"],
     liveUrl: "#",
     repoUrl: "#",
-    span: "md:col-span-1 lg:col-span-2",
+    span: "md:col-span-1 lg:col-span-1",
     defaultIcon: <Brain size={24} />,
   },
   {
@@ -72,7 +72,7 @@ const projectsData: Project[] = [
     tags: ["ANSI C", "TCP/IP", "Dijkstra's Algorithm", "Networking", "Systems Programming"],
     liveUrl: null,
     repoUrl: "#",
-    span: "md:col-span-2 lg:col-span-4",
+    span: "md:col-span-2 lg:col-span-1",
     defaultIcon: <Network size={24} />,
   },
 ];
