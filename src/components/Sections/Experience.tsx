@@ -1,8 +1,9 @@
-// src/components/Sections/Experience.js
-import React, { useRef, useState, useEffect } from "react";
+// src/components/Sections/Experience.tsx
+import React, { useState } from "react";
+import type { FC, ReactElement } from "react";
 import { Briefcase, Building, CalendarDays, Target, CheckCircle, Star } from "lucide-react";
 
-// --- Experience Section (Bento Layout) ---
+// --- TypeScript Interfaces ---
 
 interface ExperienceEntry {
   id: number;
@@ -12,13 +13,14 @@ interface ExperienceEntry {
   location: string;
   description: string;
   responsibilities: string[];
-  defaultIcon: React.ReactElement<LucideProps>;
+  defaultIcon: ReactElement;
 }
 
-interface ExperienceCardProps {
-  entry: ExperienceEntry;
-  isActive?: boolean;
+interface ExperienceDetailCardProps {
+  entry: ExperienceEntry | undefined;
 }
+
+// --- Experience Data ---
 
 const experienceData: ExperienceEntry[] = [
   {
@@ -85,7 +87,7 @@ const experienceData: ExperienceEntry[] = [
 ];
 
 // Full Experience Card (for the right bento)
-const ExperienceDetailCard: React.FC<ExperienceCardProps> = ({ entry }) => {
+const ExperienceDetailCard: FC<ExperienceDetailCardProps> = ({ entry }) => {
   const cardBg = "bg-emerald-800/80";
   const cardText = "text-lime-300";
   const cardIconColor = "text-lime-400";
@@ -159,8 +161,8 @@ const ExperienceDetailCard: React.FC<ExperienceCardProps> = ({ entry }) => {
   );
 };
 
-// Main Experience Component (Bento Layout - TSX)
-const Experience: React.FC = () => {
+// Main Experience Component
+const Experience: FC = () => {
   const [selectedExperienceId, setSelectedExperienceId] = useState<number | null>(
     experienceData.length > 0 ? experienceData[0].id : null
   );
@@ -171,7 +173,6 @@ const Experience: React.FC = () => {
 
   const selectedExperience = experienceData.find((exp) => exp.id === selectedExperienceId);
 
-  // -- UPDATED: Style for the selected item's background glow --
   const selectedBgStyle = {
     background: "radial-gradient(circle at 3% 50%, rgba(163, 230, 53, 0.15) 0%, transparent 40%)",
   };
@@ -192,12 +193,10 @@ const Experience: React.FC = () => {
             {experienceData.map((entry, index) => (
               <div
                 key={entry.id}
-                className={`relative flex items-start pb-6 last:pb-0 cursor-pointer p-2 -ml-2 rounded-lg transition-all duration-300 ease-in-out ${
-                  selectedExperienceId === entry.id
-                    ? "border-lime-500/40" // Use border to complement the glow
-                    : "border-transparent"
+                className={`relative flex items-start pb-6 last:pb-0 cursor-pointer p-2 -ml-2 rounded-lg border transition-all duration-300 ease-in-out ${
+                  selectedExperienceId === entry.id ? "border-lime-500/40" : "border-transparent"
                 }`}
-                style={selectedExperienceId === entry.id ? selectedBgStyle : {}} // Apply glow style
+                style={selectedExperienceId === entry.id ? selectedBgStyle : {}}
                 onClick={() => setSelectedExperienceId(entry.id)}
               >
                 {/* Timeline visual elements */}
@@ -267,7 +266,7 @@ const Experience: React.FC = () => {
 
         {/* Right Bento: Detailed Experience Card */}
         <div className="md:col-span-2 h-full min-h-[400px] md:min-h-0">
-          <ExperienceDetailCard entry={selectedExperience!} />
+          <ExperienceDetailCard entry={selectedExperience} />
         </div>
       </div>
       <style jsx global>{`

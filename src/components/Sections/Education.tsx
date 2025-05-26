@@ -1,9 +1,33 @@
-import React from "react";
-import { BookOpen, Award, CalendarDays, TrendingUp, Briefcase } from "lucide-react"; // Example icons, Zap removed
+// src/components/Education.tsx
 
-// --- Placeholder Education Data ---
-// Updated to match user's provided data (one entry)
-const educationData = [
+import React from "react";
+import type { FC, ReactElement } from "react";
+import { BookOpen, Award, CalendarDays, Briefcase } from "lucide-react";
+
+// --- TypeScript Interfaces ---
+
+interface Project {
+  id: string;
+  year: string;
+  title: string;
+  description: string;
+}
+
+interface EducationEntry {
+  id: number;
+  institution: string;
+  degree: string;
+  date: string;
+  description: string;
+  highlights: string[];
+  projects: Project[];
+  icon: ReactElement;
+  bgColor: string;
+  textColor: string;
+}
+
+// --- Education Data ---
+const educationData: EducationEntry[] = [
   {
     id: 1,
     institution: "University of Nottingham",
@@ -46,36 +70,33 @@ const educationData = [
   },
 ];
 
+// --- Prop Types for Sub-component ---
+interface EducationCardProps {
+  entry: EducationEntry;
+}
+
 // --- Education Card Sub-component ---
-const EducationCard = ({ entry }) => {
+const EducationCard: FC<EducationCardProps> = ({ entry }) => {
   return (
     <div
       className={`group relative rounded-xl shadow-xl overflow-hidden 
-                  transition-all duration-300 ease-in-out 
-                  transform hover:-translate-y-0.5 hover:scale-[1.01] 
-                  ${entry.bgColor || "bg-emerald-900/80"} 
-                  p-6 md:p-8 flex flex-col min-h-[320px] md:min-h-[340px]
-                  border border-white/10 hover:border-lime-500/40 hover:shadow-xl hover:shadow-lime-600/20`}
+               transition-all duration-300 ease-in-out 
+               transform hover:-translate-y-0.5 hover:scale-[1.01] 
+               ${entry.bgColor} 
+               p-6 md:p-8 flex flex-col min-h-[320px] md:min-h-[340px]
+               border border-white/10 hover:border-lime-500/40 hover:shadow-xl hover:shadow-lime-600/20`}
     >
-      {/* Card Header: Icon on left, Text block (Institution, Degree, Date) on right */}
+      {/* Card Header */}
       <div className="flex items-start mb-5">
-        <div className={`p-3 rounded-lg bg-black/40 mr-4 shrink-0 shadow-md`}>
-          {entry.icon || <BookOpen size={28} className={entry.textColor || "text-lime-400"} />}
-        </div>
+        <div className={`p-3 rounded-lg bg-black/40 mr-4 shrink-0 shadow-md`}>{entry.icon}</div>
         <div className="flex-grow">
-          <h3
-            className={`text-lg md:text-xl font-bold ${
-              entry.textColor || "text-lime-300"
-            } leading-tight mb-0.5`}
-          >
+          <h3 className={`text-lg md:text-xl font-bold ${entry.textColor} leading-tight mb-0.5`}>
             {entry.institution}
           </h3>
           <p
-            className={`text-sm font-semibold ${
-              entry.textColor
-                ? entry.textColor.replace("-300", "-500").replace("-400", "-500")
-                : "text-lime-500"
-            } mb-1.5`}
+            className={`text-sm font-semibold ${entry.textColor
+              .replace("-300", "-500")
+              .replace("-400", "-500")} mb-1.5`}
           >
             {entry.degree}
           </p>
@@ -88,7 +109,7 @@ const EducationCard = ({ entry }) => {
 
       <p className="text-gray-300 text-sm mb-5 leading-relaxed">{entry.description}</p>
 
-      {/* Highlights (Optional) */}
+      {/* Highlights */}
       {entry.highlights && entry.highlights.length > 0 && (
         <div className="mb-6">
           <h4 className="text-xs font-medium uppercase tracking-wider text-gray-400/80 mb-2.5">
@@ -98,9 +119,7 @@ const EducationCard = ({ entry }) => {
             {entry.highlights.map((highlight, index) => (
               <li key={index} className="flex items-start text-xs text-gray-300/90">
                 <span
-                  className={`mr-2.5 mt-1 inline-block h-1.5 w-1.5 rounded-full ${
-                    entry.textColor ? "bg-lime-500" : "bg-lime-500" // Consider using entry.textColor for consistency if desired
-                  } opacity-70 shrink-0`}
+                  className={`mr-2.5 mt-1 inline-block h-1.5 w-1.5 rounded-full bg-lime-500 opacity-70 shrink-0`}
                 ></span>
                 <span>{highlight}</span>
               </li>
@@ -109,7 +128,7 @@ const EducationCard = ({ entry }) => {
         </div>
       )}
 
-      {/* Relevant Projects Timeline (Optional) */}
+      {/* Relevant Projects Timeline */}
       {entry.projects && entry.projects.length > 0 && (
         <div className="mt-auto pt-5 border-t border-white/15">
           <h4 className="text-xs font-medium uppercase tracking-wider text-gray-400/80 mb-4 flex items-center">
@@ -117,41 +136,25 @@ const EducationCard = ({ entry }) => {
             Relevant Projects Timeline:
           </h4>
           <div className="relative pl-5 space-y-6 border-l-2 border-gray-600/50">
-            {entry.projects.map(
-              (
-                project // Removed index as project.id is the key
-              ) => (
-                <div key={project.id} className="relative">
-                  {/* Timeline Dot */}
-                  <div
-                    className={`absolute -left-[29px] top-1.5 h-4 w-4 rounded-full border-2 border-gray-600/50 ${
-                      entry.bgColor || "bg-emerald-900/80"
-                    } flex items-center justify-center`}
-                  >
-                    <div
-                      className={`h-2 w-2 rounded-full ${
-                        entry.textColor ? "bg-lime-500" : "bg-lime-500" // Consider using entry.textColor
-                      }`}
-                    ></div>
-                  </div>
-                  <p
-                    className={`text-xs font-semibold ${
-                      entry.textColor
-                        ? entry.textColor.replace("-300", "-500").replace("-400", "-500")
-                        : "text-lime-500"
-                    } mb-0.5`}
-                  >
-                    {project.year}
-                  </p>
-                  <h5
-                    className={`text-sm font-semibold ${entry.textColor || "text-lime-300"} mb-1`}
-                  >
-                    {project.title}
-                  </h5>
-                  <p className="text-xs text-gray-400 leading-snug">{project.description}</p>
+            {entry.projects.map((project) => (
+              <div key={project.id} className="relative">
+                {/* Timeline Dot */}
+                <div
+                  className={`absolute -left-[29px] top-1.5 h-4 w-4 rounded-full border-2 border-gray-600/50 ${entry.bgColor} flex items-center justify-center`}
+                >
+                  <div className={`h-2 w-2 rounded-full bg-lime-500`}></div>
                 </div>
-              )
-            )}
+                <p
+                  className={`text-xs font-semibold ${entry.textColor
+                    .replace("-300", "-500")
+                    .replace("-400", "-500")} mb-0.5`}
+                >
+                  {project.year}
+                </p>
+                <h5 className={`text-sm font-semibold ${entry.textColor} mb-1`}>{project.title}</h5>
+                <p className="text-xs text-gray-400 leading-snug">{project.description}</p>
+              </div>
+            ))}
           </div>
         </div>
       )}
@@ -160,10 +163,9 @@ const EducationCard = ({ entry }) => {
 };
 
 // --- Main Education Component ---
-const Education = () => {
+const Education: FC = () => {
   return (
     <div className="w-full h-full flex flex-col justify-center items-center p-4 md:p-8 gap-6 md:gap-8 text-left">
-      {/* Grid for full-width cards, stacked vertically */}
       <div className="w-full max-w-5xl grid grid-cols-1 gap-8 md:gap-12">
         {educationData.map((entry) => (
           <EducationCard key={entry.id} entry={entry} />

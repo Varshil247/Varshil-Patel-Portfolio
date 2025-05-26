@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, type ReactNode } from "react";
 import Home from "./components/Sections/Home";
 import Projects from "./components/Sections/Projects";
-import Education from "./components/Sections/Education";
+// import Education from "./components/Sections/Education";
 import Experience from "./components/Sections/Experience";
 
 // ! ----------------------------------------------------------------------------------------------
