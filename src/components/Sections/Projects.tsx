@@ -4,9 +4,6 @@ import type { FC, ReactElement } from "react";
 import { ExternalLink, Github, Brain, CalendarCheck, Route, Network } from "lucide-react";
 import clsx from "clsx";
 
-// --- TypeScript Interfaces ---
-
-// CORRECTED: Define a more specific props type for our icons
 interface StylableIconProps {
   className?: string;
   size?: number | string;
@@ -21,7 +18,6 @@ interface Project {
   liveUrl: string | null;
   repoUrl: string | null;
   span: string;
-  // CORRECTED: Use the more specific type for the icon
   defaultIcon: ReactElement<StylableIconProps>;
 }
 
@@ -29,7 +25,6 @@ interface ProjectCardProps {
   project: Project;
 }
 
-// --- Projects Data ---
 const projectsData: Project[] = [
   {
     id: 1,
@@ -39,7 +34,7 @@ const projectsData: Project[] = [
     tags: ["Python", "Flask", "XGBoost", "React", "NLP", "Gemini LLM", "D3.js", "Explainable AI"],
     liveUrl: "#",
     repoUrl: "#",
-    span: "md:col-span-1 lg:col-span-1",
+    span: "md:col-span-1",
     defaultIcon: <Brain size={24} />,
   },
   {
@@ -72,12 +67,11 @@ const projectsData: Project[] = [
     tags: ["ANSI C", "TCP/IP", "Dijkstra's Algorithm", "Networking", "Systems Programming"],
     liveUrl: null,
     repoUrl: "#",
-    span: "md:col-span-2 lg:col-span-1",
+    span: "md:col-span-1",
     defaultIcon: <Network size={24} />,
   },
 ];
 
-// Consistent style for all project cards
 const projectCardStyle = {
   bg: "bg-emerald-800/70",
   text: "text-lime-300",
@@ -89,7 +83,6 @@ const projectCardStyle = {
   hoverShadow: "hover:shadow-lime-600/20",
 };
 
-// --- Project Card Component ---
 const ProjectCard: FC<ProjectCardProps> = ({ project }) => {
   const currentCardStyle = projectCardStyle;
 
@@ -132,7 +125,6 @@ const ProjectCard: FC<ProjectCardProps> = ({ project }) => {
       )}
       <div>
         <div className="flex items-center mb-3">
-          {/* This line should now be error-free */}
           {React.cloneElement(project.defaultIcon, { className: currentCardStyle.icon, size: 22 })}
           <h3 className={clsx("ml-3 text-xl lg:text-2xl font-bold", currentCardStyle.text)}>
             {project.title}
@@ -193,7 +185,6 @@ const ProjectCard: FC<ProjectCardProps> = ({ project }) => {
   );
 };
 
-// --- Main Projects Component ---
 const Projects: FC = () => {
   const sectionTitleFrom = "from-green-400";
   const sectionTitleVia = "via-lime-400";

@@ -3,9 +3,6 @@ import React, { useState } from "react";
 import type { FC, ReactElement } from "react";
 import { Briefcase, Building, CalendarDays, Target, CheckCircle, Star } from "lucide-react";
 
-// --- TypeScript Interfaces ---
-
-// CORRECTED: Define a props type for icons that can be styled
 interface StylableIconProps {
   className?: string;
   size?: number | string;
@@ -19,15 +16,12 @@ interface ExperienceEntry {
   location: string;
   description: string;
   responsibilities: string[];
-  // CORRECTED: Use the more specific type for the icon
   defaultIcon: ReactElement<StylableIconProps>;
 }
 
 interface ExperienceDetailCardProps {
   entry: ExperienceEntry | undefined;
 }
-
-// --- Experience Data ---
 
 const experienceData: ExperienceEntry[] = [
   {
@@ -93,7 +87,6 @@ const experienceData: ExperienceEntry[] = [
   },
 ];
 
-// Full Experience Card (for the right bento)
 const ExperienceDetailCard: FC<ExperienceDetailCardProps> = ({ entry }) => {
   const cardBg = "bg-emerald-800/80";
   const cardText = "text-lime-300";
@@ -123,7 +116,6 @@ const ExperienceDetailCard: FC<ExperienceDetailCardProps> = ({ entry }) => {
         <div
           className={`p-3 rounded-xl bg-gradient-to-br from-lime-500/30 to-emerald-600/40 mr-4 shrink-0 shadow-lg`}
         >
-          {/* This cloneElement is now type-safe */}
           {React.cloneElement(entry.defaultIcon, { className: cardIconColor, size: 28 })}
         </div>
         <div className="flex-grow">
@@ -169,7 +161,6 @@ const ExperienceDetailCard: FC<ExperienceDetailCardProps> = ({ entry }) => {
   );
 };
 
-// Main Experience Component
 const Experience: FC = () => {
   const [selectedExperienceId, setSelectedExperienceId] = useState<number | null>(
     experienceData.length > 0 ? experienceData[0].id : null
@@ -193,8 +184,7 @@ const Experience: FC = () => {
         My Professional Experience
       </h2>
 
-      <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-        {/* Left Bento: Minimal Timeline */}
+      <div className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
         <div className="md:col-span-1 bg-emerald-900/50 p-4 sm:p-6 rounded-2xl shadow-lg border border-lime-500/20 h-full max-h-[70vh] overflow-y-auto scrollbar-thin scrollbar-thumb-lime-600/50 scrollbar-track-emerald-900/30">
           <h3 className="text-xl font-semibold text-lime-300 mb-5 pl-1">Timeline</h3>
           <div className="relative">
@@ -207,7 +197,6 @@ const Experience: FC = () => {
                 style={selectedExperienceId === entry.id ? selectedBgStyle : {}}
                 onClick={() => setSelectedExperienceId(entry.id)}
               >
-                {/* Timeline visual elements */}
                 <div className="absolute left-4 top-2 w-8 flex flex-col items-center -ml-[16px] h-full">
                   <div
                     className={`flex-shrink-0 w-8 h-8 rounded-full border-2 flex items-center justify-center z-10 shadow-md transition-all duration-300 
@@ -217,7 +206,6 @@ const Experience: FC = () => {
                             : "bg-emerald-700 border-lime-500/70"
                         }`}
                   >
-                    {/* This cloneElement is also now type-safe */}
                     {React.cloneElement(entry.defaultIcon, {
                       className: `${
                         selectedExperienceId === entry.id ? "text-emerald-900" : "text-lime-300"
@@ -239,7 +227,6 @@ const Experience: FC = () => {
                   )}
                 </div>
 
-                {/* Minimal Experience Info */}
                 <div
                   className={`ml-10 pl-3 flex-grow transition-opacity duration-300 ${
                     selectedExperienceId === entry.id ? "opacity-100" : "opacity-70"
@@ -273,7 +260,6 @@ const Experience: FC = () => {
           </div>
         </div>
 
-        {/* Right Bento: Detailed Experience Card */}
         <div className="md:col-span-2 h-full min-h-[400px] md:min-h-0">
           <ExperienceDetailCard entry={selectedExperience} />
         </div>

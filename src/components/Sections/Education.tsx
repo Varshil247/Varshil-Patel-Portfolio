@@ -1,8 +1,6 @@
 import type { FC, ReactElement } from "react";
 import { Award, CalendarDays, Briefcase } from "lucide-react";
 
-// --- TypeScript Interfaces ---
-
 interface Project {
   id: string;
   year: string;
@@ -23,7 +21,6 @@ interface EducationEntry {
   textColor: string;
 }
 
-// --- Education Data ---
 const educationData: EducationEntry[] = [
   {
     id: 1,
@@ -31,34 +28,27 @@ const educationData: EducationEntry[] = [
     degree: "BSc Computer Science with Artificial Intelligence",
     date: "2022 - 2025",
     description:
-      "Focused on machine learning, natural language processing, and computer vision. Key modules include Advanced AI, Neural Networks, and Data Ethics. Currently working on a final year project involving generative models for creative content.",
+      "Focused on Machine Learning, Heuristic Optimisation, and Data Visualisation. Key modules include Artificial Intelligence Methods, Designing Intelligent Agents, and Software Engineering Group Project. Developed complex, robust and scalable projects with high impact and research novelty.",
     highlights: [
-      "Recipient of the 'Academic Excellence Scholarship' (2023)",
-      "Lead Developer for 'AI for Social Good' hackathon winning team",
-      "Contributor to open-source NLP library",
-      "Expected First Class Honours",
+      "Artificial Intelligence Research Programme with Google DeepMind",
+      "Lead Backend Developer for Software Engineering Group Project",
+      "Advanced XGBoost-FinBERT model for financial investments",
+      "Top 5 Duo at HackNotts24, GeoGuesserAI CNN-LSTM vs Humans",
     ],
     projects: [
       {
-        id: "p1-1",
-        year: "2025",
-        title: "Generative AI Capstone Project",
+        id: "p2",
+        year: "Sep 2024 - May 2025",
+        title: "FinVis-AI: Stock Analysis Platform",
         description:
-          "Developing a novel approach for creative content generation using advanced GANs and transformer models.",
+          "Designed a comprehensive stock analysis platform that provides a holistic view of fundamental, technical and sentiment analysis. Architected an XGBoost-SHAP model to enhance technical analysis of stock symbols. Utilised Gemini-LLM and FinBERT to extract sentiment and collate financial literacy insights. Developed a novel 2-dimensional financial ratios Treemap to allow investors to extract deeper sector wide comparisons.",
       },
       {
-        id: "p1-2",
-        year: "2024",
-        title: "NLP Research Contribution",
+        id: "p1",
+        year: "Apr 2025 - May 2025",
+        title: "DRL Agents for Automated Trading",
         description:
-          "Contributed to an open-source library for sentiment analysis, improving accuracy by 8%.",
-      },
-      {
-        id: "p1-3",
-        year: "2023",
-        title: "AI Hackathon Winner: 'AI for Social Good'",
-        description:
-          "Led a team to develop an AI-powered solution for optimizing local food bank logistics.",
+          "Developed robust A2C and PPO agents to trade on the S&P 500 index. Evaluated the effects of data rich quantitative environments, strategic agent reward functions and hyper-parameter tuning to balance exploration-exploitation factors. Created a robust and profitable environment-agent architecture that has agent stability and 6.5x returns when backtested.",
       },
     ],
     icon: <Award size={28} className="text-lime-400" />,
@@ -67,12 +57,10 @@ const educationData: EducationEntry[] = [
   },
 ];
 
-// --- Prop Types for Sub-component ---
 interface EducationCardProps {
   entry: EducationEntry;
 }
 
-// --- Education Card Sub-component ---
 const EducationCard: FC<EducationCardProps> = ({ entry }) => {
   return (
     <div
@@ -83,7 +71,6 @@ const EducationCard: FC<EducationCardProps> = ({ entry }) => {
                p-6 md:p-8 flex flex-col min-h-[320px] md:min-h-[340px]
                border border-white/10 hover:border-lime-500/40 hover:shadow-xl hover:shadow-lime-600/20`}
     >
-      {/* Card Header */}
       <div className="flex items-start mb-5">
         <div className={`p-3 rounded-lg bg-black/40 mr-4 shrink-0 shadow-md`}>{entry.icon}</div>
         <div className="flex-grow">
@@ -106,7 +93,6 @@ const EducationCard: FC<EducationCardProps> = ({ entry }) => {
 
       <p className="text-gray-300 text-sm mb-5 leading-relaxed">{entry.description}</p>
 
-      {/* Highlights */}
       {entry.highlights && entry.highlights.length > 0 && (
         <div className="mb-6">
           <h4 className="text-xs font-medium uppercase tracking-wider text-gray-400/80 mb-2.5">
@@ -125,7 +111,6 @@ const EducationCard: FC<EducationCardProps> = ({ entry }) => {
         </div>
       )}
 
-      {/* Relevant Projects Timeline */}
       {entry.projects && entry.projects.length > 0 && (
         <div className="mt-auto pt-5 border-t border-white/15">
           <h4 className="text-xs font-medium uppercase tracking-wider text-gray-400/80 mb-4 flex items-center">
@@ -135,7 +120,6 @@ const EducationCard: FC<EducationCardProps> = ({ entry }) => {
           <div className="relative pl-5 space-y-6 border-l-2 border-gray-600/50">
             {entry.projects.map((project) => (
               <div key={project.id} className="relative">
-                {/* Timeline Dot */}
                 <div
                   className={`absolute -left-[29px] top-1.5 h-4 w-4 rounded-full border-2 border-gray-600/50 ${entry.bgColor} flex items-center justify-center`}
                 >
@@ -159,10 +143,18 @@ const EducationCard: FC<EducationCardProps> = ({ entry }) => {
   );
 };
 
-// --- Main Education Component ---
 const Education: FC = () => {
+  const sectionTitleFrom = "from-green-400";
+  const sectionTitleVia = "via-lime-400";
+  const sectionTitleTo = "to-emerald-500";
+
   return (
-    <div className="w-full h-full flex flex-col justify-center items-center p-4 md:p-8 gap-6 md:gap-8 text-left">
+    <div className="w-full h-full flex flex-col justify-center items-center p-4 md:p-8 text-left">
+      <h2
+        className={`text-3xl md:text-4xl font-bold mb-8 md:mb-10 text-transparent bg-clip-text bg-gradient-to-r ${sectionTitleFrom} ${sectionTitleVia} ${sectionTitleTo} text-center`}
+      >
+        My Educational Journey
+      </h2>
       <div className="w-full max-w-5xl grid grid-cols-1 gap-8 md:gap-12">
         {educationData.map((entry) => (
           <EducationCard key={entry.id} entry={entry} />
