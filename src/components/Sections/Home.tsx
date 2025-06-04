@@ -1,80 +1,100 @@
 import React, { useState, useEffect } from "react";
-import VarshilImage from "../../assets/Varshil.jpg";
+import HandwrittenText from "../UI/HandwrittenText";
 
-interface RotatingWordsProps {
-  rotatingWords: string[];
-}
+// ! ----------------------------------------------------------------------------------------------
 
-const RotatingWords: React.FC<RotatingWordsProps> = ({ rotatingWords }) => {
-  const [currentWordIndex, setCurrentWordIndex] = useState<number>(0);
+const phrases = [
+  {
+    id: "swe",
+    pathData:
+      "M8.10 45.50Q4.10 45.50 2.05 43.23Q0 40.95 0 36.70L0 34.70L5.20 34.70L5.20 37.10Q5.20 40.50 8.05 40.50Q9.45 40.50 10.18 39.67Q10.90 38.85 10.90 37Q10.90 34.80 9.90 33.13Q8.90 31.45 6.20 29.10Q2.80 26.10 1.45 23.67Q0.10 21.25 0.10 18.20Q0.10 14.05 2.20 11.77Q4.30 9.50 8.30 9.50Q12.25 9.50 14.28 11.77Q16.30 14.05 16.30 18.30L16.30 19.75L11.10 19.75L11.10 17.95Q11.10 16.15 10.40 15.32Q9.70 14.50 8.35 14.50Q5.60 14.50 5.60 17.85Q5.60 19.75 6.63 21.40Q7.65 23.05 10.35 25.40Q13.80 28.40 15.10 30.85Q16.40 33.30 16.40 36.60Q16.40 40.90 14.28 43.20Q12.15 45.50 8.10 45.50ZM27.50 45.50Q23.45 45.50 21.30 43.20Q19.15 40.90 19.15 36.70L19.15 18.30Q19.15 14.10 21.30 11.80Q23.45 9.50 27.50 9.50Q31.55 9.50 33.70 11.80Q35.85 14.10 35.85 18.30L35.85 36.70Q35.85 40.90 33.70 43.20Q31.55 45.50 27.50 45.50M27.50 40.50Q30.35 40.50 30.35 37.05L30.35 17.95Q30.35 14.50 27.50 14.50Q24.65 14.50 24.65 17.95L24.65 37.05Q24.65 40.50 27.50 40.50ZM39.55 10L54.10 10L54.10 15L45.05 15L45.05 24.75L52.15 24.75L52.15 29.75L45.05 29.75L45.05 45L39.55 45L39.55 10ZM61.05 15L55.30 15L55.30 10L72.30 10L72.30 15L66.55 15L66.55 45L61.05 45L61.05 15ZM73.65 10L78.95 10L81.40 36.90L81.50 36.90L84.10 10L90.10 10L92.70 36.90L92.80 36.90L95.25 10L100 10L96.45 45L89.60 45L87.10 21.40L87 21.40L84.50 45L77.20 45L73.65 10ZM107.05 10L114.50 10L120.20 45L114.70 45L113.70 38.05L113.70 38.15L107.45 38.15L106.45 45L101.35 45L107.05 10M113.05 33.40L110.60 16.10L110.50 16.10L108.10 33.40L113.05 33.40ZM122.85 10L131 10Q135.25 10 137.20 11.98Q139.15 13.95 139.15 18.05L139.15 20.20Q139.15 25.65 135.55 27.10L135.55 27.20Q137.55 27.80 138.38 29.65Q139.20 31.50 139.20 34.60L139.20 40.75Q139.20 42.25 139.30 43.17Q139.40 44.10 139.80 45L134.20 45Q133.90 44.15 133.80 43.40Q133.70 42.65 133.70 40.70L133.70 34.30Q133.70 31.90 132.93 30.95Q132.15 30 130.25 30L128.35 30L128.35 45L122.85 45L122.85 10M130.35 25Q132 25 132.82 24.15Q133.65 23.30 133.65 21.30L133.65 18.60Q133.65 16.70 132.97 15.85Q132.30 15 130.85 15L128.35 15L128.35 25L130.35 25ZM143 10L158 10L158 15L148.50 15L148.50 24.25L156.05 24.25L156.05 29.25L148.50 29.25L148.50 40L158 40L158 45L143 45L143 10ZM169.15 10L184.15 10L184.15 15L174.65 15L174.65 24.25L182.20 24.25L182.20 29.25L174.65 29.25L174.65 40L184.15 40L184.15 45L169.15 45L169.15 10ZM187.30 10L194.20 10L199.55 30.95L199.65 30.95L199.65 10L204.55 10L204.55 45L198.90 45L192.30 19.45L192.20 19.45L192.20 45L187.30 45L187.30 10ZM216.45 45.50Q212.45 45.50 210.35 43.23Q208.25 40.95 208.25 36.70L208.25 18.30Q208.25 14.05 210.35 11.77Q212.45 9.50 216.45 9.50Q220.45 9.50 222.55 11.77Q224.65 14.05 224.65 18.30L224.65 21.30L219.45 21.30L219.45 17.95Q219.45 14.50 216.60 14.50Q213.75 14.50 213.75 17.95L213.75 37.10Q213.75 40.50 216.60 40.50Q219.45 40.50 219.45 37.10L219.45 30.25L216.70 30.25L216.70 25.25L224.65 25.25L224.65 36.70Q224.65 40.95 222.55 43.23Q220.45 45.50 216.45 45.50ZM228.20 10L233.70 10L233.70 45L228.20 45L228.20 10ZM237.80 10L244.70 10L250.05 30.95L250.15 30.95L250.15 10L255.05 10L255.05 45L249.40 45L242.80 19.45L242.70 19.45L242.70 45L237.80 45L237.80 10ZM259.15 10L274.15 10L274.15 15L264.65 15L264.65 24.25L272.20 24.25L272.20 29.25L264.65 29.25L264.65 40L274.15 40L274.15 45L259.15 45L259.15 10ZM277.30 10L292.30 10L292.30 15L282.80 15L282.80 24.25L290.35 24.25L290.35 29.25L282.80 29.25L282.80 40L292.30 40L292.30 45L277.30 45L277.30 10ZM295.45 10L303.60 10Q307.85 10 309.80 11.98Q311.75 13.95 311.75 18.05L311.75 20.20Q311.75 25.65 308.15 27.10L308.15 27.20Q310.15 27.80 310.97 29.65Q311.80 31.50 311.80 34.60L311.80 40.75Q311.80 42.25 311.90 43.17Q312 44.10 312.40 45L306.80 45Q306.50 44.15 306.40 43.40Q306.30 42.65 306.30 40.70L306.30 34.30Q306.30 31.90 305.52 30.95Q304.75 30 302.85 30L300.95 30L300.95 45L295.45 45L295.45 10M302.95 25Q304.60 25 305.42 24.15Q306.25 23.30 306.25 21.30L306.25 18.60Q306.25 16.70 305.57 15.85Q304.90 15 303.45 15L300.95 15L300.95 25L302.95 25Z",
+    drawDurSec: 10,
+    eraseDurSec: 2,
+    strokeW: 1,
+  },
+  {
+    id: "ai",
+    pathData:
+      "M5.70 10L13.15 10L18.85 45L13.35 45L12.35 38.05L12.35 38.15L6.10 38.15L5.10 45L0 45L5.70 10M11.70 33.40L9.25 16.10L9.15 16.10L6.75 33.40L11.70 33.40ZM21.50 10L29.65 10Q33.90 10 35.85 11.98Q37.80 13.95 37.80 18.05L37.80 20.20Q37.80 25.65 34.20 27.10L34.20 27.20Q36.20 27.80 37.02 29.65Q37.85 31.50 37.85 34.60L37.85 40.75Q37.85 42.25 37.95 43.17Q38.05 44.10 38.45 45L32.85 45Q32.55 44.15 32.45 43.40Q32.35 42.65 32.35 40.70L32.35 34.30Q32.35 31.90 31.57 30.95Q30.80 30 28.90 30L27 30L27 45L21.50 45L21.50 10M29 25Q30.65 25 31.48 24.15Q32.30 23.30 32.30 21.30L32.30 18.60Q32.30 16.70 31.63 15.85Q30.95 15 29.50 15L27 15L27 25L29 25ZM45.95 15L40.20 15L40.20 10L57.20 10L57.20 15L51.45 15L51.45 45L45.95 45L45.95 15ZM59.85 10L65.35 10L65.35 45L59.85 45L59.85 10ZM69.45 10L84 10L84 15L74.95 15L74.95 24.75L82.05 24.75L82.05 29.75L74.95 29.75L74.95 45L69.45 45L69.45 10ZM86.65 10L92.15 10L92.15 45L86.65 45L86.65 10ZM104.00 45.50Q100.05 45.50 97.98 43.25Q95.90 41 95.90 36.90L95.90 18.10Q95.90 14 97.98 11.75Q100.05 9.50 104.00 9.50Q107.95 9.50 110.03 11.75Q112.10 14 112.10 18.10L112.10 21.80L106.90 21.80L106.90 17.75Q106.90 14.50 104.15 14.50Q101.40 14.50 101.40 17.75L101.40 37.30Q101.40 40.50 104.15 40.50Q106.90 40.50 106.90 37.30L106.90 31.95L112.10 31.95L112.10 36.90Q112.10 41 110.03 43.25Q107.95 45.50 104.00 45.50ZM115.40 10L120.90 10L120.90 45L115.40 45L115.40 10ZM129.25 10L136.70 10L142.40 45L136.90 45L135.90 38.05L135.90 38.15L129.65 38.15L128.65 45L123.55 45L129.25 10M135.25 33.40L132.80 16.10L132.70 16.10L130.30 33.40L135.25 33.40ZM145.05 10L150.55 10L150.55 40L159.60 40L159.60 45L145.05 45L145.05 10ZM170.25 10L175.75 10L175.75 45L170.25 45L170.25 10ZM179.85 10L186.75 10L192.10 30.95L192.20 30.95L192.20 10L197.10 10L197.10 45L191.45 45L184.85 19.45L184.75 19.45L184.75 45L179.85 45L179.85 10ZM205.50 15L199.75 15L199.75 10L216.75 10L216.75 15L211 15L211 45L205.50 45L205.50 15ZM219.40 10L234.40 10L234.40 15L224.90 15L224.90 24.25L232.45 24.25L232.45 29.25L224.90 29.25L224.90 40L234.40 40L234.40 45L219.40 45L219.40 10ZM237.55 10L243.05 10L243.05 40L252.10 40L252.10 45L237.55 45L237.55 10ZM254.75 10L260.25 10L260.25 40L269.30 40L269.30 45L254.75 45L254.75 10ZM271.95 10L277.45 10L277.45 45L271.95 45L271.95 10ZM289.35 45.50Q285.35 45.50 283.25 43.23Q281.15 40.95 281.15 36.70L281.15 18.30Q281.15 14.05 283.25 11.77Q285.35 9.50 289.35 9.50Q293.35 9.50 295.45 11.77Q297.55 14.05 297.55 18.30L297.55 21.30L292.35 21.30L292.35 17.95Q292.35 14.50 289.50 14.50Q286.65 14.50 286.65 17.95L286.65 37.10Q286.65 40.50 289.50 40.50Q292.35 40.50 292.35 37.10L292.35 30.25L289.60 30.25L289.60 25.25L297.55 25.25L297.55 36.70Q297.55 40.95 295.45 43.23Q293.35 45.50 289.35 45.50ZM301.10 10L316.10 10L316.10 15L306.60 15L306.60 24.25L314.15 24.25L314.15 29.25L306.60 29.25L306.60 40L316.10 40L316.10 45L301.10 45L301.10 10ZM319.25 10L326.15 10L331.50 30.95L331.60 30.95L331.60 10L336.50 10L336.50 45L330.85 45L324.25 19.45L324.15 19.45L324.15 45L319.25 45L319.25 10ZM348.35 45.50Q344.40 45.50 342.32 43.25Q340.25 41 340.25 36.90L340.25 18.10Q340.25 14 342.32 11.75Q344.40 9.50 348.35 9.50Q352.30 9.50 354.38 11.75Q356.45 14 356.45 18.10L356.45 21.80L351.25 21.80L351.25 17.75Q351.25 14.50 348.50 14.50Q345.75 14.50 345.75 17.75L345.75 37.30Q345.75 40.50 348.50 40.50Q351.25 40.50 351.25 37.30L351.25 31.95L356.45 31.95L356.45 36.90Q356.45 41 354.38 43.25Q352.30 45.50 348.35 45.50ZM359.75 10L374.75 10L374.75 15L365.25 15L365.25 24.25L372.80 24.25L372.80 29.25L365.25 29.25L365.25 40L374.75 40L374.75 45L359.75 45L359.75 10Z",
+    drawDurSec: 10,
+    eraseDurSec: 2,
+    strokeW: 1,
+  },
+];
 
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      setCurrentWordIndex((prevIndex) => (prevIndex + 1) % rotatingWords.length);
-    }, 5000);
-    return () => clearInterval(intervalId);
-  }, [rotatingWords.length]);
+// ! ----------------------------------------------------------------------------------------------
 
-  return (
-    <div
-      className="relative text-3xl px-6 py-2
-               before:content-['']
-               before:block
-               before:absolute
-               before:inset-0
-              before:bg-black
-               lg:before:-skew-x-12
-               lg:before:-z-10
-               w-full"
-    >
-      <div className="h-[1.3em] overflow-hidden relative">
-        <div
-          className="flex flex-col transition-transform duration-1000 ease-in-out"
-          style={{ transform: `translateY(-${currentWordIndex * 1.3}em)` }}
-        >
-          {rotatingWords.map((word, index) => (
-            <span
-              key={index}
-              className="block h-[1.3em] text-lime-300 font-extrabold italic text-center md:text-left"
-            >
-              {word}
-            </span>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-};
+const FADE_TRANSITION_MS = 1000;
+const PAUSE_BETWEEN_PHRASES_SEC = 0;
 
 const Home: React.FC = () => {
-  const rotatingWords1 = ["Engineer", "Architect", "Designer"];
-  const rotatingWords2 = ["Hiker", "Explorer", "Enthusiast"];
-  const rotatingWords3 = ["Tennis", "Badminton", "Formula 1"];
+  const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0);
+  const [isTextContainerVisible, setIsTextContainerVisible] = useState(true);
+
+  useEffect(() => {
+    if (!phrases || phrases.length === 0) return;
+
+    const currentPhrase = phrases[currentPhraseIndex];
+    const currentDrawTimeMs = currentPhrase.drawDurSec * 1000;
+    const currentEraseTimeMs = currentPhrase.eraseDurSec * 1000;
+    const pauseBetweenPhrasesMs = PAUSE_BETWEEN_PHRASES_SEC * 1000;
+
+    const cycleTimeForCurrentPhrase =
+      currentDrawTimeMs + currentEraseTimeMs + pauseBetweenPhrasesMs;
+
+    const timerId = setTimeout(() => {
+      setIsTextContainerVisible(false);
+
+      setTimeout(() => {
+        setCurrentPhraseIndex((prevIndex) => (prevIndex + 1) % phrases.length);
+        setIsTextContainerVisible(true);
+      }, FADE_TRANSITION_MS);
+    }, cycleTimeForCurrentPhrase - FADE_TRANSITION_MS);
+
+    return () => clearTimeout(timerId);
+  }, [currentPhraseIndex]);
+
+  if (!phrases || phrases.length === 0) {
+    return <p>Loading texts...</p>;
+  }
+
+  const activePhrase = phrases[currentPhraseIndex];
 
   return (
-    <div className="w-full min-h-screen flex flex-col lg:flex-row justify-center items-center gap-3 lg:gap-x-16 p-4 sm:p-9 text-white">
-      <div className="flex-shrink-0 mb-8 md:mb-0">
-        <img
-          src={VarshilImage}
-          alt="Profile"
-          className="w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 lg:w-80 lg:h-80 rounded-full object-cover border-4 border-lime-400 shadow-xl"
-        />
-      </div>
+    <div className="flex flex-col w-full h-full justify-center items-center p-3 gap-6 md:gap-9">
+      <div className="flex flex-col justify-center items-center gap-4 text-center">
+        <p className="text-dark italic text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold">
+          VARSHIL PATEL
+        </p>
 
-      <div className="flex flex-col items-center lg:items-start gap-y-9 italic text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold">
-        <div className="flex flex-row items-baseline">
-          <p className="text-gray-300">Hi I'm</p>
-          <p className="text-lime-400">&nbsp;Varshil!</p>
+        <div
+          className={`
+            text-special italic h-6 sm:h-10 md:h-14
+            w-full max-w-xl flex justify-center items-center
+            transition-opacity ease-in-out
+          `}
+          style={{
+            transitionDuration: `${FADE_TRANSITION_MS}ms`,
+            opacity: isTextContainerVisible ? 1 : 0,
+          }}
+        >
+          <HandwrittenText
+            key={activePhrase.id}
+            svgPathData={activePhrase.pathData}
+            drawDurationSec={activePhrase.drawDurSec}
+            eraseDurationSec={activePhrase.eraseDurSec}
+            strokeWidth={activePhrase.strokeW}
+          />
         </div>
-
-        <div className="flex flex-col lg:flex-row gap-3 items-center">
-          <RotatingWords rotatingWords={rotatingWords1} />
-          <RotatingWords rotatingWords={rotatingWords2} />
-          <RotatingWords rotatingWords={rotatingWords3} />
-        </div>
+        <p className="text-dark italic max-w-sm text-sm md:text-lg md:max-w-2xl">
+          Hi! I'm Varshil, a passionate Computer Scientist with a keen interest in applying powerful
+          AI/ML solutions to drive impactful fullstack applications.
+        </p>
       </div>
     </div>
   );
 };
 
 export default Home;
+
+// ! ----------------------------------------------------------------------------------------------

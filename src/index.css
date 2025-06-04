@@ -1,13 +1,21 @@
-/* @import url('https://fonts.googleapis.com/css2?family=Poetsen+One&display=swap'); */
-/* @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300;400;700&display=swap'); */
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  
+.light {
+  --light: #faf9f6;
+  --regular: #7a93ac;
+  --dark: #2d3142;
+  --special: #315c2b;
+}
+
+.dark {
+  --light: #2d3142;
+  --regular: #7a93ac;
+  --dark: #faf9f6;
+  --special: #aef6c7;
 }
 
 html {

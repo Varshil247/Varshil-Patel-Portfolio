@@ -1,13 +1,18 @@
-import React, { useState, useEffect, useRef, type ReactNode } from "react";
+import React, { useState, useEffect, useRef, type JSX } from "react";
 import Home from "./components/Sections/Home";
 import Projects from "./components/Sections/Projects";
 import Education from "./components/Sections/Education";
 import Experience from "./components/Sections/Experience";
+import { Signature, Briefcase, Presentation, GraduationCap, MessageCircle } from "lucide-react";
+import ThemeToggleAnimated from "./components/UI/ThemeSelector";
 
-interface NavLink {
+// ! ----------------------------------------------------------------------------------------------
+
+export interface NavLink {
   id: string;
+  icon: JSX.Element;
   label: string;
-  content: ReactNode;
+  content: JSX.Element;
 }
 
 interface SectionTransform {
@@ -16,12 +21,36 @@ interface SectionTransform {
   scale: number;
 }
 
+// ! ----------------------------------------------------------------------------------------------
+
 const navLinks: NavLink[] = [
-  { id: "Home", label: "🏘️ Home", content: <Home /> },
-  { id: "Experience", label: "💼 Experience", content: <Experience /> },
-  { id: "Projects", label: "⚒️ Projects", content: <Projects /> },
-  { id: "Education", label: "🎓 Education", content: <Education /> },
+  {
+    id: "About",
+    icon: <Signature size={24} strokeWidth={1.5} />,
+    label: "About",
+    content: <Home />,
+  },
+  {
+    id: "Experience",
+    icon: <Briefcase size={24} strokeWidth={1.5} />,
+    label: "Experience",
+    content: <Experience />,
+  },
+  {
+    id: "Projects",
+    icon: <Presentation size={24} strokeWidth={1.5} />,
+    label: "Projects",
+    content: <Projects />,
+  },
+  {
+    id: "Education",
+    icon: <GraduationCap size={24} strokeWidth={1.5} />,
+    label: "Education",
+    content: <Education />,
+  },
 ];
+
+// ! ----------------------------------------------------------------------------------------------
 
 const App: React.FC = () => {
   const [activeSection, setActiveSection] = useState<string>(navLinks[0].id);
@@ -31,6 +60,46 @@ const App: React.FC = () => {
 
   const mainRef = useRef<HTMLElement | null>(null);
   const sectionRefs = useRef<(HTMLElement | null)[]>([]);
+
+  // ! ----------------------------------------------------------------------------------------------
+
+  const [currentTheme, setCurrentTheme] = useState<"light" | "dark">("light");
+
+  const handleThemeChange = (selectedTheme: "light" | "dark") => {
+    setCurrentTheme(selectedTheme);
+    if (selectedTheme === "dark") {
+      document.documentElement.classList.add("dark");
+      document.documentElement.classList.remove("light");
+    } else {
+      document.documentElement.classList.remove("dark");
+      document.documentElement.classList.add("light");
+    }
+    localStorage.setItem("theme", selectedTheme);
+  };
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme") as "light" | "dark" | null;
+    let initialThemeToApply: "light" | "dark";
+
+    if (savedTheme) {
+      initialThemeToApply = savedTheme;
+    } else {
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      initialThemeToApply = prefersDark ? "dark" : "light";
+    }
+
+    handleThemeChange(initialThemeToApply);
+    if (initialThemeToApply === "light" && !document.documentElement.classList.contains("light")) {
+      document.documentElement.classList.add("light");
+    } else if (
+      initialThemeToApply === "dark" &&
+      !document.documentElement.classList.contains("dark")
+    ) {
+      document.documentElement.classList.add("dark");
+    }
+  }, []);
+
+  // ! ----------------------------------------------------------------------------------------------
 
   useEffect(() => {
     if (!mainRef.current) return;
@@ -106,49 +175,65 @@ const App: React.FC = () => {
     }
   };
 
+  // ! ----------------------------------------------------------------------------------------------
+
   return (
-    <div className="flex flex-col w-full h-screen bg-gradient-to-br from-slate-900 via-emerald-900 to-green-900 md:flex-row">
-      <aside className="sticky top-0 left-0 w-full p-4 z-20 md:h-screen md:w-auto">
-        <nav className="h-full w-full flex items-center justify-center md:flex-col">
-          <ul className="flex flex-row justify-center gap-2 md:flex-col md:gap-4">
+    <div className="flex flex-col w-screen h-screen p-6 gap-6 bg-dark md:flex-row">
+      <aside className="sticky top-0 left-0 w-full p-3 z-50 bg-light rounded-md shadow-lg md:w-auto md:h-full">
+        <nav className="flex flex-row items-center justify-between w-full md:flex-col md:h-full">
+          <ul className="flex flex-row justify-center gap-3 md:flex-col">
             {navLinks.map((link, index) => (
               <li key={link.id}>
                 <a
                   href={`#${link.id}`}
                   onClick={(e) => handleScrollToSection(e, index)}
-                  className={`block font-semibold text-xs p-3 rounded-lg transition-all duration-300 ease-in-out transform hover:scale-105 md:font-extrabold md:text-lg sm:text-sm
-                    ${
-                      activeSection === link.id
-                        ? "text-white bg-gradient-to-r from-green-500 to-lime-500 shadow-lg"
-                        : "text-gray-300 hover:text-lime-300"
-                    }`}
+                  className={`flex flex-row items-end gap-3 p-2 font-light rounded-md transition-all duration-300 ease-in-out transform hover:scale-105
+                  ${
+                    activeSection === link.id
+                      ? "text-light bg-special"
+                      : "text-dark hover:text-light hover:bg-regular"
+                  }`}
                 >
-                  {link.label}
+                  <div className="hidden md:contents">{link.icon}</div>
+                  <div>{link.label}</div>
                 </a>
               </li>
             ))}
           </ul>
+
+          <div className="flex flex-row items-center justify-center gap-3 md:flex-col md:w-full">
+            <ThemeToggleAnimated theme={currentTheme} handleThemeChange={handleThemeChange} />
+            {/* <div className="flex p-1 border border-dark rounded-lg md:w-full shadow-sm">
+              <button
+                title="Contact Me"
+                aria-label="Contact Me"
+                className="flex flex-1 items-center justify-center gap-2 p-1.5 w-full rounded-md text-regular hover:bg-special hover:text-light transition-colors duration-200 ease-in-out"
+              >
+                <MessageCircle size={18} strokeWidth={1.5} />
+                <p className="text-xs font-light">Contact me</p>
+              </button>
+            </div> */}
+          </div>
         </nav>
       </aside>
 
       <main
         ref={mainRef}
-        className="flex-1 items-center w-full h-full overflow-y-auto scroll-smooth scroll-snap-type-y-mandatory px-3 py-3 gap-3 md:px-9 md:py-9 md:gap-9"
-        style={{ transformStyle: "preserve-3d" }}
+        className="flex flex-col gap-9 w-full h-full rounded-md overflow-y-auto scroll-smooth scroll-snap-type-y-mandatory"
       >
         {navLinks.map((link, index) => {
-          const transform = sectionTransforms[index];
+          const transform = sectionTransforms[index] || { rotateX: 0, rotateY: 0, scale: 1 };
           return (
             <section
               key={link.id}
               ref={(element) => {
                 sectionRefs.current[index] = element;
               }}
-              className="w-full min-h-full p-3 scroll-snap-align-start rounded-xl bg-black/30 shadow-2xl flex items-center justify-center"
+              className="flex flex-col items-center justify-center w-full min-h-screen rounded-md bg-light shadow-lg scroll-snap-align-start"
               id={link.id}
               style={{
                 transform: `rotateX(${transform.rotateX}deg) rotateY(${transform.rotateY}deg) scale(${transform.scale})`,
-                transition: "transform 3s cubic-bezier(0.25, 0.8, 0.25, 1)",
+                transition: "transform 1s cubic-bezier(0.25, 0.8, 0.25, 1)",
                 transformOrigin: "center center",
               }}
             >
@@ -162,3 +247,5 @@ const App: React.FC = () => {
 };
 
 export default App;
+
+// ! ----------------------------------------------------------------------------------------------

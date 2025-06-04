@@ -6,13 +6,17 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        // Add "Bebas Neue" here
-        bebas: ['"Bebas Neue"', "sans-serif"], // Fallback to a generic sans-serif
-
-        // If you were using "Roboto Condensed" as your default sans, it would look like this:
-        // 'sans': ['"Roboto Condensed"', 'system-ui', 'sans-serif'],
+        bebas: ['"Bebas Neue"', "sans-serif"],
+      },
+      colors: {
+        light: "var(--light)",
+        regular: "var(--regular)",
+        dark: "var(--dark)",
+        special: "var(--special)",
       },
     },
   },
   plugins: [],
 };
+
+
