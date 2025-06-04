@@ -3,7 +3,7 @@ import Home from "./components/Sections/Home";
 import Projects from "./components/Sections/Projects";
 import Education from "./components/Sections/Education";
 import Experience from "./components/Sections/Experience";
-import { Signature, Briefcase, Presentation, GraduationCap, MessageCircle } from "lucide-react";
+import { Signature, Briefcase, Presentation, GraduationCap } from "lucide-react";
 import ThemeToggleAnimated from "./components/UI/ThemeSelector";
 
 // ! ----------------------------------------------------------------------------------------------
