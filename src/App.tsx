@@ -222,7 +222,7 @@ const App: React.FC = () => {
         className="flex flex-col gap-9 w-full h-full rounded-md overflow-y-auto scroll-smooth scroll-snap-type-y-mandatory"
       >
         {navLinks.map((link, index) => {
-          // const transform = sectionTransforms[index] || { rotateX: 0, rotateY: 0, scale: 1 };
+          const transform = sectionTransforms[index] || { rotateX: 0, rotateY: 0, scale: 1 };
           return (
             <section
               key={link.id}
@@ -231,11 +231,11 @@ const App: React.FC = () => {
               }}
               className="flex flex-col items-center justify-center w-full h-fit rounded-md bg-light shadow-lg scroll-snap-align-start"
               id={link.id}
-              // style={{
-              //   transform: `rotateX(${transform.rotateX}deg) rotateY(${transform.rotateY}deg) scale(${transform.scale})`,
-              //   transition: "transform 1s cubic-bezier(0.25, 0.8, 0.25, 1)",
-              //   transformOrigin: "center center",
-              // }}
+              style={{
+                transform: `rotateX(${transform.rotateX}deg) rotateY(${transform.rotateY}deg) scale(${transform.scale})`,
+                transition: "transform 1s cubic-bezier(0.25, 0.8, 0.25, 1)",
+                transformOrigin: "center center",
+              }}
             >
               {link.content}
             </section>

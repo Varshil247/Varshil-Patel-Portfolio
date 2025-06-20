@@ -136,7 +136,7 @@ const ProjectCard: FC<ProjectCardProps> = ({ project }) => {
 
 const Projects: FC = () => {
   return (
-    <div className="flex flex-col justify-center items-center gap-3 w-full min-h-[85vh] p-6">
+    <div className="flex flex-col justify-center items-center gap-3 w-full min-h-[95vh] p-6">
       <h2 className="italic text-3xl font-bebas font-extrabold text-special">Personal Projects</h2>
       <div className="w-full max-w-7xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 auto-rows-fr">
         {projectsData.map((project) => (

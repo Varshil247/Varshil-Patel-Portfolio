@@ -32,7 +32,7 @@ const experienceData: ExperienceEntry[] = [
     company: "Formula Students Al",
     role: "Project Manager & Path Planning Lead",
     date: "Sep 2024 - Present",
-    location: "Nottingham, United Kingdom",
+    location: "Nottingham",
     description:
       "Leading a 22-engineer team in developing perception, path planning, and control algorithms for an autonomous race car. Spearheaded Python path planning solutions (RRT, Delaunay).",
     responsibilities: [
@@ -47,7 +47,7 @@ const experienceData: ExperienceEntry[] = [
     company: "Cboe Global Markets",
     role: "Software Engineering Intern",
     date: "Jun 2024 - Aug 2024",
-    location: "London, United Kingdom",
+    location: "London",
     description:
       "Engineered and modernised 3 market data tools (Django, PostgreSQL, React), delivering low-latency trade data services and improving system reliability across 15+ global exchange venues.",
     responsibilities: [
@@ -63,7 +63,7 @@ const experienceData: ExperienceEntry[] = [
     company: "University of Nottingham",
     role: "Fullstack Software Engineer",
     date: "Sep 2023 - Jun 2024",
-    location: "Nottingham, United Kingdom",
+    location: "Nottingham",
     description:
       "Developed a real-time whiteboard app (JavaScript, PostgreSQL, Supabase, React). Optimised Ul performance by 80% (Redux, CDN caching, on-demand loading).",
     responsibilities: [
@@ -78,7 +78,7 @@ const experienceData: ExperienceEntry[] = [
     company: "Nottingham Street Aid",
     role: "Fullstack Software Engineer",
     date: "Sep 2023 - Jan 2024",
-    location: "Nottingham, United Kingdom",
+    location: "Nottingham",
     description:
       "Built a scalable MERN platform for grant distribution, aiding 1,600+ individuals. Created a secure portal (JWT, Bcrypt, 2FA) & cut page load times by 25%.",
     responsibilities: [
@@ -98,39 +98,58 @@ const ExperienceDetailCard: FC<ExperienceDetailCardProps> = ({ entry }) => {
   }
 
   return (
-    <div className="flex flex-col gap-3 p-3 border border-dark rounded-lg transition-all duration-300 ease-in-out bg-light h-full">
-      <div className="flex flex-row gap-3 p-3 items-center">
-        <div className="p-3 rounded-md bg-special shadow-md">
-          {React.cloneElement(entry.defaultIcon, { className: "text-light", size: 28 })}
-        </div>
-        <div className="flex flex-row items-end justify-between gap-3 w-full">
-          <div className="flex flex-col">
-            <h3 className="text-lg font-bold text-special">{entry.company}</h3>
-            <p className="text-md font-medium text-dark flex items-center">{entry.role}</p>
+    <div className="flex flex-col gap-2 sm:gap-3 p-3 sm:p-4 border border-dark rounded-lg transition-all duration-300 ease-in-out bg-light h-full">
+      <div className="flex flex-col gap-3 p-2 sm:p-3">
+        <div className="flex flex-row gap-3 items-center">
+          <div className="p-2 sm:p-3 rounded-md bg-special shadow-md shrink-0">
+            {React.cloneElement(entry.defaultIcon, {
+              className: "text-light",
+              size: window.innerWidth < 640 ? 32 : 28,
+            })}
           </div>
-          <div className="flex flex-col text-right text-regular text-sm shrink-0">
-            <p>{entry.date}</p>
-            <p>{entry.location}</p>
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 sm:gap-3 w-full">
+            <div className="flex flex-col min-w-0">
+              <h3 className="text-base sm:text-lg font-bold text-special truncate">
+                {entry.company}
+              </h3>
+              <p className="text-sm sm:text-md font-medium text-dark">{entry.role}</p>
+              <div className="flex sm:hidden flex-row gap-2 text-regular text-xs mt-1">
+                <p className="whitespace-nowrap">{entry.date}</p>
+                <p>•</p>
+                <p className="whitespace-nowrap">{entry.location}</p>
+              </div>
+            </div>
+            <div className="hidden sm:flex flex-col text-right text-regular text-xs sm:text-sm shrink-0">
+              <p className="whitespace-nowrap">{entry.date}</p>
+              <p className="whitespace-nowrap">{entry.location}</p>
+            </div>
           </div>
         </div>
       </div>
-
-      <div className="flex flex-col p-3">
-        <p className="text-dark text-sm leading-relaxed">{entry.description}</p>
+      <div className="flex flex-col p-2 sm:p-3">
+        <p className="text-dark text-xs sm:text-sm leading-relaxed">{entry.description}</p>
       </div>
-
       {entry.responsibilities && entry.responsibilities.length > 0 && (
-        <div className="flex flex-col gap-3 p-3">
+        <div className="flex flex-col gap-2 sm:gap-3 p-2 sm:p-3">
           <div className="border-t border-regular" />
-          <h4 className="flex flex-row gap-3 items-center text-sm font-semibold uppercase text-regular tracking-wider">
-            <CheckCircle size={15} className="text-special" />
+          <h4 className="flex flex-row gap-2 sm:gap-3 items-center text-xs sm:text-sm font-semibold uppercase text-regular tracking-wider">
+            <CheckCircle
+              size={window.innerWidth < 640 ? 12 : 15}
+              className="text-special shrink-0"
+            />
             <p>Key Contributions</p>
           </h4>
-          <ul className="space-y-2 pl-1">
+          <ul className="space-y-1.5 sm:space-y-2 pl-0 sm:pl-1">
             {entry.responsibilities.map((item, index) => (
-              <li key={index} className="flex flex-row gap-2.5 items-start text-sm text-dark">
-                <Star size={14} className="text-special fill-special opacity-80 shrink-0 mt-0.5" />
-                <span>{item}</span>
+              <li
+                key={index}
+                className="flex flex-row gap-2 sm:gap-2.5 items-start text-xs sm:text-sm text-dark"
+              >
+                <Star
+                  size={window.innerWidth < 640 ? 12 : 14}
+                  className="text-special fill-special opacity-80 shrink-0 mt-0.5"
+                />
+                <span className="leading-relaxed">{item}</span>
               </li>
             ))}
           </ul>
@@ -150,7 +169,7 @@ const Experience: FC = () => {
   const selectedExperience = experienceData.find((exp) => exp.id === selectedExperienceId);
 
   return (
-    <div className="flex flex-col items-center justify-center w-full min-h-[85vh] p-6 gap-3">
+    <div className="flex flex-col items-center justify-center w-full min-h-[95vh] p-6 gap-3">
       <h2 className="italic text-3xl font-bebas font-extrabold text-special">
         Professional Experience
       </h2>
