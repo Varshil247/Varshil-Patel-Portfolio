@@ -61,7 +61,7 @@ const Home: React.FC = () => {
   const activePhrase = phrases[currentPhraseIndex];
 
   return (
-    <div className="flex flex-col w-full h-full justify-center items-center p-3 gap-6 md:gap-9">
+    <div className="flex flex-col w-full min-h-[85vh] justify-center items-center p-3 gap-6 md:gap-9">
       <div className="flex flex-col justify-center items-center gap-4 text-center">
         <p className="text-dark italic text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold">
           VARSHIL PATEL

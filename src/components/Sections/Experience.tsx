@@ -150,7 +150,7 @@ const Experience: FC = () => {
   const selectedExperience = experienceData.find((exp) => exp.id === selectedExperienceId);
 
   return (
-    <div className="flex flex-col items-center justify-center w-full h-full p-6 gap-3">
+    <div className="flex flex-col items-center justify-center w-full min-h-[85vh] p-6 gap-3">
       <h2 className="italic text-3xl font-bebas font-extrabold text-special">
         Professional Experience
       </h2>
