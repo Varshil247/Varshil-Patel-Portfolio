@@ -3,7 +3,7 @@ import Home from "./components/Sections/Home";
 import Projects from "./components/Sections/Projects";
 import Education from "./components/Sections/Education";
 import Experience from "./components/Sections/Experience";
-import { Signature, Briefcase, Presentation, GraduationCap, MessageCircle } from "lucide-react";
+import { Signature, Briefcase, Presentation, GraduationCap } from "lucide-react";
 import ThemeToggleAnimated from "./components/UI/ThemeSelector";
 
 // ! ----------------------------------------------------------------------------------------------
@@ -202,7 +202,7 @@ const App: React.FC = () => {
           </ul>
 
           <div className="flex flex-row items-center justify-center gap-3 md:flex-col md:w-full">
-            <div className="flex p-1 border border-dark rounded-lg md:w-full shadow-sm">
+            {/* <div className="flex p-1 border border-dark rounded-lg md:w-full shadow-sm">
               <button
                 title="Contact Me"
                 aria-label="Contact Me"
@@ -211,7 +211,7 @@ const App: React.FC = () => {
                 <MessageCircle size={18} strokeWidth={1.5} />
                 <p className="text-xs font-light hidden md:contents">Contact me</p>
               </button>
-            </div>
+            </div> */}
             <ThemeToggleAnimated theme={currentTheme} handleThemeChange={handleThemeChange} />
           </div>
         </nav>
