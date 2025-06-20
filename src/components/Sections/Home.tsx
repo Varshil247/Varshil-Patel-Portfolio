@@ -69,7 +69,7 @@ const Home: React.FC = () => {
 
         <div
           className={`
-            text-special italic h-6 sm:h-10 md:h-14
+            text-special italic h-10 sm:h-12 md:h-16
             w-full max-w-xl flex justify-center items-center
             transition-opacity ease-in-out
           `}

@@ -54,7 +54,7 @@ const navLinks: NavLink[] = [
 
 const App: React.FC = () => {
   const [activeSection, setActiveSection] = useState<string>(navLinks[0].id);
-  const [sectionTransforms, setSectionTransforms] = useState<SectionTransform[]>(
+  const [, setSectionTransforms] = useState<SectionTransform[]>(
     navLinks.map(() => ({ rotateX: 0, rotateY: 0, scale: 1 }))
   );
 
@@ -178,7 +178,7 @@ const App: React.FC = () => {
   // ! ----------------------------------------------------------------------------------------------
 
   return (
-    <div className="flex flex-col w-screen h-screen p-6 gap-6 bg-dark md:flex-row">
+    <div className="flex flex-col w-screen h-screen p-3 gap-3 md:p-6 md:gap-6 bg-dark md:flex-row">
       <aside className="sticky top-0 left-0 w-full p-3 z-50 bg-light rounded-md shadow-lg md:w-auto md:h-full">
         <nav className="flex flex-row items-center justify-between w-full md:flex-col md:h-full">
           <ul className="flex flex-row justify-center gap-3 md:flex-col">
@@ -222,7 +222,7 @@ const App: React.FC = () => {
         className="flex flex-col gap-9 w-full h-full rounded-md overflow-y-auto scroll-smooth scroll-snap-type-y-mandatory"
       >
         {navLinks.map((link, index) => {
-          const transform = sectionTransforms[index] || { rotateX: 0, rotateY: 0, scale: 1 };
+          // const transform = sectionTransforms[index] || { rotateX: 0, rotateY: 0, scale: 1 };
           return (
             <section
               key={link.id}
@@ -231,11 +231,11 @@ const App: React.FC = () => {
               }}
               className="flex flex-col items-center justify-center w-full h-fit rounded-md bg-light shadow-lg scroll-snap-align-start"
               id={link.id}
-              style={{
-                transform: `rotateX(${transform.rotateX}deg) rotateY(${transform.rotateY}deg) scale(${transform.scale})`,
-                transition: "transform 1s cubic-bezier(0.25, 0.8, 0.25, 1)",
-                transformOrigin: "center center",
-              }}
+              // style={{
+              //   transform: `rotateX(${transform.rotateX}deg) rotateY(${transform.rotateY}deg) scale(${transform.scale})`,
+              //   transition: "transform 1s cubic-bezier(0.25, 0.8, 0.25, 1)",
+              //   transformOrigin: "center center",
+              // }}
             >
               {link.content}
             </section>
